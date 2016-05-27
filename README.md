@@ -10,7 +10,7 @@ NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 |Mother|Father|Child|
 |---|---|---|
 |NA12892|NA12891|NA12878|
-|---|---|---|
+
 
 If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
 
@@ -22,7 +22,7 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 |Chromosome|Start|End|
 |---|---|---|
 |chr1|17704860|18004860|
-|---|---|---|
+
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.
 
@@ -32,26 +32,26 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unpor
 ### Software requirements
 These are all already installed, but here are the original links.
 
-  * [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
   * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
   * [SAMTools](http://sourceforge.net/projects/samtools/)
   * [BWA](http://bio-bwa.sourceforge.net/)
   * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
-  * [Picard](http://picard.sourceforge.net/)
+  * [Picard](http://broadinstitute.github.io/picard/)
 
 
 ### Environment setup
 ```
-export PATH=$PATH:TO_BE_DET_PATH/tabix-0.2.6/:TO_BE_DET_PATH/igvtools_2.3.31/
-export PICARD_HOME=/usr/local/bin
-export GATK_JAR=/usr/local/bin/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=TO_BE_DET_PATH/bvatools-1.1/bvatools-1.1-full.jar
-export TRIMMOMATIC_JAR=/usr/local/bin/trimmomatic-0.32.jar
+export ROOT_DIR=~/workspace/HTSeq_module2
+export TRIMMOMATIC_JAR=$ROOT_DIR/tools/Trimmomatic-0.36/trimmomatic-0.36.jar
+export PICARD_JAR=$ROOT_DIR/tools/picard-tools-1.141/picard.jar
+export GATK_JAR=$ROOT_DIR/tools/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar
+export BVATOOLS_JAR=$ROOT_DIR/tools/bvatools-1.6/bvatools-1.6-full.jar
 export REF=TO_BE_DET_PATH/kyotoWorkshop/references/
 
-cd $HOME
-rsync -avP TO_BE_DET_PATH/cleanCopy/ $HOME/workshop/
-cd $HOME/workshop/
+rm -rf $ROOT_DIR
+mkdir -p $ROOT_DIR
+cd $ROOT_DIR
+ln -s ~/CourseData/HT_data/Module2/* .
 ```
 
 
@@ -74,7 +74,6 @@ The initial structure of your folders should look like this:
 * [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
 
 
-
 # First data glance
 So you've just received an email saying that your data is ready for download from the sequencing center of your choice.
 
@@ -92,8 +91,8 @@ zcat raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz | head -n4
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
 From the second set of commands (the head), what was special about the output?
-Why was it like that?
-[Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_fastq.ex1.md)
+
+**Why was it like that?** [Solution](solutions/_fastq1.md)
 
 You could also just count the reads
 ```
@@ -103,7 +102,7 @@ Why shouldn't you just do
 ```
 zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
-[Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/_fastq.ex2.md)
+[Solution](solutions/_fastq2.md)
 
 
 ### Quality
@@ -119,11 +118,6 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --read1 raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz \
   --read2 raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz \
   --threads 2 --regionName SRR --output originalQC/
-
-java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
-  --read1 raw_reads/NA12878/runERR_1/NA12878.ERR.33.pair1.fastq.gz \
-  --read2 raw_reads/NA12878/runERR_1/NA12878.ERR.33.pair2.fastq.gz \
-  --threads 2 --regionName ERR --output originalQC/
 ```
 
 Copy the images from the ```originalQC``` folder to your desktop and open the images.
@@ -214,7 +208,7 @@ bwa mem -M -t 2 \
   ${REF}/hg19.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
-  | java -Xmx2G -jar ${PICARD_HOME}/SortSam.jar \
+  | java -Xmx2G -jar ${PICARD_JAR} SortSam \
   INPUT=/dev/stdin \
   OUTPUT=alignment/NA12878/NA12878.sorted.bam \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
@@ -267,10 +261,10 @@ Why did searching one name find both reads? [Solution](solutions/_sambam.ex2.md)
 You can use samtools to filter reads as well.
 
 ```
-# Say you want to count the *un-aligned* reads you can use
+# Say you want to count the *un-aligned* reads, you can use
 samtools view -c -f4 alignment/NA12878/NA12878.sorted.bam
 
-# Or you want to count the *aligned* reads you can use
+# Or you want to count the *aligned* reads you, can use
 samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 ```
@@ -335,8 +329,8 @@ ATCG--ATATATATATCG
 
 This makes it easier for down stream tools.
 
-## FixMates
-This step shouldn't be necessary...but it is.
+## FixMates (optional)
+This step shouldn't be necessary...but it is some time.
 
 This goes through the BAM file and find entries which don't have their mate information written properly.
 
@@ -346,7 +340,7 @@ one-off corrdinates and such.
 This happened a lot with bwa backtrack. This happens less with bwa mem, but it still happens none the less.
 
 ```
-java -Xmx2G -jar ${PICARD_HOME}/FixMateInformation.jar \
+java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
   VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000 \
   INPUT=alignment/NA12878/NA12878.realigned.sorted.bam \
   OUTPUT=alignment/NA12878/NA12878.matefixed.sorted.bam
@@ -359,7 +353,7 @@ What are the ways to detect them? [Solution](solutions/_markdup.ex2.md)
 
 Here we will use picards approach:
 ```
-java -Xmx2G -jar ${PICARD_HOME}/MarkDuplicates.jar \
+java -Xmx2G -jar ${PICARD_JAR} MarkDuplicates \
   REMOVE_DUPLICATES=false CREATE_MD5_FILE=true VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true \
   INPUT=alignment/NA12878/NA12878.matefixed.sorted.bam \
   OUTPUT=alignment/NA12878/NA12878.sorted.dup.bam \
@@ -433,7 +427,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L 1:47000000-47171000
 
-# Look at the coverage
+### Look at the coverage
 less -S alignment/NA12878/NA12878.sorted.dup.recal.coverage.sample_interval_summary
 ```
 
@@ -444,7 +438,7 @@ That means something is wrong in your coverage. A mix of WGS and WES would show 
 
 ## Insert Size
 ```
-java -Xmx2G -jar ${PICARD_HOME}/CollectInsertSizeMetrics.jar \
+java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
   VALIDATION_STRINGENCY=SILENT \
   REFERENCE_SEQUENCE=${REF}/hg19.fa \
   INPUT=alignment/NA12878/NA12878.sorted.dup.recal.bam \
@@ -466,7 +460,7 @@ You can try it if you want.
 We prefer the Picard way of computing metrics
 
 ```
-java -Xmx2G -jar ${PICARD_HOME}/CollectAlignmentSummaryMetrics.jar \
+java -Xmx2G -jar ${PICARD_JAR} CollectAlignmentSummaryMetrics \
   VALIDATION_STRINGENCY=SILENT \
   REFERENCE_SEQUENCE=${REF}/hg19.fa \
   INPUT=alignment/NA12878/NA12878.sorted.dup.recal.bam \
