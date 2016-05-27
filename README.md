@@ -92,7 +92,7 @@ zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
 From the second set of commands (the head), what was special about the output?
 
-**Why was it like that?** [Solution](solutions/_fastq1.md)
+**Why was it like that?** [Solution](solutions/_fastq2.md)
 
 You could also just count the reads
 ```
@@ -102,7 +102,7 @@ Why shouldn't you just do
 ```
 zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
-[Solution](solutions/_fastq2.md)
+[Solution](solutions/_fastq3.md)
 
 
 ### Quality
@@ -127,7 +127,7 @@ scp -r <USER>@www.genome.med.kyoto-u.ac.jp:~/workshop/originalQC/ ./
 ```
 
 What stands out in the graphs?
-[Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_fastqQC.ex1.md)
+[Solution](solutions/_fastqQC1.md)
 
 All the generated graphics have their uses. This being said 2 of them are particularly useful to get an overal picture of how good or bad a run went. These are the Quality box plots and the nucleotide content graphs.
 
