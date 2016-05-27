@@ -1,34 +1,49 @@
 
 # Introduction to DNA-Seq processing
-This workshop will show you how to launch individual steps of a complete DNA-Seq pipeline
+This workshop will show you how to launch individual first steps of a DNA-Seq pipeline
 
 We will be working on a 1000 genome sample, NA12878. You can find the whole raw data on the 1000 genome website:
 http://www.1000genomes.org/data
 
+NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
+
+|Mother|Father|Child|
+|---|---|---|
+|NA12892|NA12891|NA12878|
+|---|---|---|
+
+If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
+
+[Here is a script which provide the command lines for the analysis of NA12891 & NA12892](scripts/commands_parents.sh)
+
 For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
+We're going to focus on the reads extracted from a 300 kbp stretch of chromosome 1
+
+|Chromosome|Start|End|
+|---|---|---|
+|chr1|17704860|18004860|
+|---|---|---|
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.
 
+
 ## Original Setup
 
-The initial structure of your folders should look like this:
-```
-<ROOT>
-|-- raw_reads/               # fastqs from the center (down sampled)
-    `-- NA12878              # One sample directory
-        |-- runERR_1         # Lane directory by run number. Contains the fastqs
-        `-- runSRR_1         # Lane directory by run number. Contains the fastqs
-`-- project.nanuq.csv        # sample sheet
-```
+### Software requirements
+These are all already installed, but here are the original links.
 
-### Cheat sheets
-* [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
+  * [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
+  * [SAMTools](http://sourceforge.net/projects/samtools/)
+  * [BWA](http://bio-bwa.sourceforge.net/)
+  * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
+  * [Picard](http://picard.sourceforge.net/)
+
 
 ### Environment setup
 ```
 export PATH=$PATH:TO_BE_DET_PATH/tabix-0.2.6/:TO_BE_DET_PATH/igvtools_2.3.31/
 export PICARD_HOME=/usr/local/bin
-export SNPEFF_HOME=TO_BE_DET_PATH/snpEff_v3_5_core/snpEff
 export GATK_JAR=/usr/local/bin/GenomeAnalysisTK.jar
 export BVATOOLS_JAR=TO_BE_DET_PATH/bvatools-1.1/bvatools-1.1-full.jar
 export TRIMMOMATIC_JAR=/usr/local/bin/trimmomatic-0.32.jar
@@ -39,32 +54,42 @@ rsync -avP TO_BE_DET_PATH/cleanCopy/ $HOME/workshop/
 cd $HOME/workshop/
 ```
 
-### Software requirements
-These are all already installed, but here are the original links.
 
-  * [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
-  * [SAMTools](http://sourceforge.net/projects/samtools/)
-  * [IGV](http://www.broadinstitute.org/software/igv/download)
-  * [BWA](http://bio-bwa.sourceforge.net/)
-  * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
-  * [Picard](http://picard.sourceforge.net/)
-  * [SnpEff](http://snpeff.sourceforge.net/)
+### Data files
+
+The initial structure of your folders should look like this:
+```
+<ROOT>
+|-- raw_reads/               # fastqs from the center (down sampled)
+    `-- NA12878/             # Child sample directory
+    `-- NA12891/             # Father sample directory
+    `-- NA12892/             # Mother sample directory
+`-- reference/               # hg19 reference and indexes
+`-- scripts/                 # command lines scripts
+`-- saved_results/           # precomputed final files
+`-- tools/                   # Some tools for the analysis 
+```
+
+### Cheat sheets
+* [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
+
 
 
 # First data glance
 So you've just received an email saying that your data is ready for download from the sequencing center of your choice.
-The first thing to do is download it, the second thing is making sure it is of good quality.
+
+**What should you do ?** [solution](solutions/_data.md)
+
 
 ### Fastq files
 Let's first explore the fastq file.
 
 Try these commands
 ```
-zless -S raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair1.fastq.gz
+zless -S raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 
-zcat raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair1.fastq.gz | head -n4
-zcat raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair2.fastq.gz | head -n4
+zcat raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz | head -n4
+zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
 From the second set of commands (the head), what was special about the output?
 Why was it like that?
@@ -72,11 +97,11 @@ Why was it like that?
 
 You could also just count the reads
 ```
-zgrep -c "^@SRR" raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair1.fastq.gz
+zgrep -c "^@SN1114" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
 Why shouldn't you just do
 ```
-zgrep -c "^@" raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair1.fastq.gz
+zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
 [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/_fastq.ex2.md)
 
@@ -91,8 +116,8 @@ Let's look at the data:
 ```
 mkdir originalQC/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
-  --read1 raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair1.fastq.gz \
-  --read2 raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair2.fastq.gz \
+  --read1 raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz \
+  --read2 raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz \
   --threads 2 --regionName SRR --output originalQC/
 
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
@@ -122,7 +147,7 @@ The formula outputs an integer that is encoded using an [ASCII](http://en.wikipe
 Older illumina runs were using phred+64 instead of phred+33 to encode their fastq files.
 
 In the SRR dataset we also see some adapters.
-Why does this happen [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_fastqQC.ex2.md)
+Why does this happen [Solution](solutions/_fastqQC.ex2.md)
 
 
 ### Trimming
@@ -139,119 +164,77 @@ We can look at the adapters
 ```
 cat adapters.fa
 ```
-Why are there 2 different ones? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_trim.ex1.md)
+**Why are there 2 different ones?** [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_trim.ex1.md)
 
 
 Let's try removing them and see what happens.
 ```
-mkdir -p reads/NA12878/runSRR_1/
-mkdir -p reads/NA12878/runERR_1/
+mkdir -p reads/NA12878/
 
 java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -threads 2 -phred33 \
-  raw_reads/NA12878/runERR_1/NA12878.ERR.33.pair1.fastq.gz \
-  raw_reads/NA12878/runERR_1/NA12878.ERR.33.pair2.fastq.gz \
-  reads/NA12878/runERR_1/NA12878.ERR.t20l32.pair1.fastq.gz \
-  reads/NA12878/runERR_1/NA12878.ERR.t20l32.single1.fastq.gz \
-  reads/NA12878/runERR_1/NA12878.ERR.t20l32.pair2.fastq.gz \
-  reads/NA12878/runERR_1/NA12878.ERR.t20l32.single2.fastq.gz \
-  ILLUMINACLIP:adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
-  2> reads/NA12878/runERR_1/NA12878.ERR.trim.out
-
-java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -threads 2 -phred33 \
-  raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair1.fastq.gz \
-  raw_reads/NA12878/runSRR_1/NA12878.SRR.33.pair2.fastq.gz \
-  reads/NA12878/runSRR_1/NA12878.SRR.t20l32.pair1.fastq.gz \
-  reads/NA12878/runSRR_1/NA12878.SRR.t20l32.single1.fastq.gz \
-  reads/NA12878/runSRR_1/NA12878.SRR.t20l32.pair2.fastq.gz \
-  reads/NA12878/runSRR_1/NA12878.SRR.t20l32.single2.fastq.gz \
+  raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz \
+  raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz \
+  reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
+  reads/NA12878/NA12878_CBW_chr1_S1.t20l32.fastq.gz \
+  reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
+  reads/NA12878/NA12878_CBW_chr1_S2.t20l32.fastq.gz \
   ILLUMINACLIP:adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
   2> reads/NA12878/runSRR_1/NA12878.SRR.trim.out
 
-cat reads/NA12878/runERR_1/NA12878.ERR.trim.out reads/NA12878/runSRR_1/NA12878.SRR.trim.out
+cat reads/NA12878/runSRR_1/NA12878.SRR.trim.out
 ```
 
-What does Trimmomatic says it did? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_trim.ex2.md)
+What does Trimmomatic says it did? [Solution](solutions/_trim.ex2.md)
 
 Let's look at the graphs now
 
 ```
 mkdir postTrimQC/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
-  --read1 reads/NA12878/runERR_1/NA12878.ERR.t20l32.pair1.fastq.gz \
-  --read2 reads/NA12878/runERR_1/NA12878.ERR.t20l32.pair2.fastq.gz \
-  --threads 2 --regionName ERR --output postTrimQC/
-java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
-  --read1 reads/NA12878/runSRR_1/NA12878.SRR.t20l32.pair1.fastq.gz \
-  --read2 reads/NA12878/runSRR_1/NA12878.SRR.t20l32.pair2.fastq.gz \
+  --read1 reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
+  --read2 reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   --threads 2 --regionName SRR --output postTrimQC/
 ```
 
-How does it look now? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_trim.ex3.md)
+How does it look now? [Solution](solutions/_trim.ex3.md)
 
 
 # Alignment
-The raw reads are now cleaned up of artefacts we can align each lane separatly.
+The raw reads are now cleaned up of artefacts we can align the read to the reference.
 
-Why should this be done separatly? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_aln.ex1.md)
+In case you have multiple readsets or library you should align them separatly !
+
+Why should this be done separatly? [Solution](solutions/_aln.ex1.md)
 
 ```
-mkdir -p alignment/NA12878/runERR_1
-mkdir -p alignment/NA12878/runSRR_1
-
-bwa mem -M -t 2 \
-  -R '@RG\tID:ERR_ERR_1\tSM:NA12878\tLB:ERR\tPU:runERR_1\tCN:Broad Institute\tPL:ILLUMINA' \
-  ${REF}/b37.fasta \
-  reads/NA12878/runERR_1/NA12878.ERR.t20l32.pair1.fastq.gz \
-  reads/NA12878/runERR_1/NA12878.ERR.t20l32.pair2.fastq.gz \
-  | java -Xmx2G -jar ${PICARD_HOME}/SortSam.jar \
-  INPUT=/dev/stdin \
-  OUTPUT=alignment/NA12878/runERR_1/NA12878.ERR.sorted.bam \
-  CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
+mkdir -p alignment/NA12878/
 
 bwa mem -M -t 2 \
   -R '@RG\tID:SRR_SRR_1\tSM:NA12878\tLB:SRR\tPU:runSRR_1\tCN:Broad Institute\tPL:ILLUMINA' \
-  ${REF}/b37.fasta \
-  reads/NA12878/runSRR_1/NA12878.SRR.t20l32.pair1.fastq.gz \
-  reads/NA12878/runSRR_1/NA12878.SRR.t20l32.pair2.fastq.gz \
+  ${REF}/hg19.fa \
+  reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
+  reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   | java -Xmx2G -jar ${PICARD_HOME}/SortSam.jar \
   INPUT=/dev/stdin \
-  OUTPUT=alignment/NA12878/runSRR_1/NA12878.SRR.sorted.bam \
+  OUTPUT=alignment/NA12878/NA12878.sorted.bam \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
 ```
 
-Why is it important to set Read Group information? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_aln.ex2.md)
+Why is it important to set Read Group information? [Solution](solutions/_aln.ex2.md)
 
 The details of the fields can be found in the SAM/BAM specifications [Here](http://samtools.sourceforge.net/SAM1.pdf)
 For most cases, only the sample name, platform unit and library one are important. 
 
-Why did we pipe the output of one to the other? Could we have done it differently? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_aln.ex3.md)
+Why did we pipe the output of one to the other? Could we have done it differently? [Solution](solutions/_aln.ex3.md)
 
-We will explore the generated BAM latter.
+!We will explore the generated BAM latter!
 
-# Lane merging
-We now have alignments for each of the sequences lanes. This is not practical in it's current form. What we wan't to do now
-is merge the results into one BAM.
+# Lane merging (optional)
+**We now have alignments for each of the sequences lanes. This is not practical in it's current form. What we wan't to do now
+is merge the results into one BAM.**
 
 Since we identified the reads in the BAM with read groups, even after the merging, we can still identify the origin of each read.
 
-```
-java -Xmx2G -jar ${PICARD_HOME}/MergeSamFiles.jar \
-  INPUT=alignment/NA12878/runERR_1/NA12878.ERR.sorted.bam \
-  INPUT=alignment/NA12878/runSRR_1/NA12878.SRR.sorted.bam \
-  OUTPUT=alignment/NA12878/NA12878.sorted.bam \
-  VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true
-``` 
-
-You should now have one BAM containing all your data.
-Let's double check
-```
-ls -l alignment/NA12878/
-samtools view -H alignment/NA12878/NA12878.sorted.bam | grep "^@RG"
-
-```
-
-You should have your 2 read group entries.
-Why did we use the ```-H``` switch? Try without. What happens? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_merge.ex1.md)
 
 ## SAM/BAM
 Let's spend some time to explore bam files.
@@ -262,15 +245,13 @@ samtools view alignment/NA12878/NA12878.sorted.bam | head -n2
 ```
 
 Here you have examples of alignment results.
-A full description of the flags can be found in the SAM specification
-http://samtools.sourceforge.net/SAM1.pdf
+A full description of the flags can be found in the [SAM specification](http://samtools.sourceforge.net/SAM1.pdf)
 
-Try using picards explain flag site to understand what is going on with your reads
-http://picard.sourceforge.net/explain-flags.html
+Try using [picards explain flag site](http://picard.sourceforge.net/explain-flags.html) to understand what is going on with your reads
 
 The flag is the 2nd column.
 
-What do the flags of the first 2 reads mean? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_sambam.ex1.md)
+What do the flags of the first 2 reads mean? [Solution](solutions/_sambam.ex1.md)
 
 Let's take the 2nd one, the one that is in proper pair, and find it's pair.
 
@@ -280,7 +261,8 @@ samtools view alignment/NA12878/NA12878.sorted.bam | grep ERR001742.6173685
 
 ```
 
-Why did searching one name find both reads? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_sambam.ex2.md)
+Why did searching one name find both reads? [Solution](solutions/_sambam.ex2.md)
+
 
 You can use samtools to filter reads as well.
 
@@ -292,7 +274,7 @@ samtools view -c -f4 alignment/NA12878/NA12878.sorted.bam
 samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 ```
-How many reads mapped and unmapped were there? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_sambam.ex3.md)
+How many reads mapped and unmapped were there? [Solution](solutions/_sambam.ex3.md)
 
 
 Another useful bit of information in the SAM is the CIGAR string.
@@ -307,6 +289,8 @@ The exact details of the cigar string can be found in the SAM spec as well.
 Another good site
 
 # Cleaning up alignments
+
+## Indel realignment
 We started by cleaning up the raw reads. Now we need to fix some alignments.
 
 The first step for this is to realign around indels and snp dense regions.
@@ -319,22 +303,22 @@ It basically runs in 2 steps
 ```
 java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
-  -R ${REF}/b37.fasta \
+  -R ${REF}/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L 1
 
 java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
-  -R ${REF}/b37.fasta \
+  -R ${REF}/hg19.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
 
 ```
 
-How could we make this go faster? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_realign.ex1.md)
-How many regions did it think needed cleaning? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_realign.ex2.md)
+How could we make this go faster? [Solution](solutions/_realign.ex1.md)
+How many regions did it think needed cleaning? [Solution](solutions/_realign.ex2.md)
 
 Indel Realigner also makes sure the called deletions are left aligned when there is a microsat of homopolmer.
 ```
@@ -351,7 +335,7 @@ ATCG--ATATATATATCG
 
 This makes it easier for down stream tools.
 
-# FixMates
+## FixMates
 This step shouldn't be necessary...but it is.
 
 This goes through the BAM file and find entries which don't have their mate information written properly.
@@ -368,10 +352,10 @@ java -Xmx2G -jar ${PICARD_HOME}/FixMateInformation.jar \
   OUTPUT=alignment/NA12878/NA12878.matefixed.sorted.bam
 ```
 
-# Mark duplicates
+## Mark duplicates
 As the step says, this is to mark duplicate reads.
-What are duplicate reads? What are they caused by? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_markdup.ex1.md)
-What are the ways to detect them? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_markdup.ex2.md)
+What are duplicate reads? What are they caused by? [Solution](solutions/_markdup.ex1.md)
+What are the ways to detect them? [Solution](solutions/_markdup.ex2.md)
 
 Here we will use picards approach:
 ```
@@ -390,7 +374,7 @@ How many duplicates were there? [Solution](https://github.com/lletourn/Workshops
 
 This is on the high side, usually or rather, now since this is old data, this should be <2% for 2-3 lanes.
 
-# Recalibration
+## Recalibration
 This is the last BAM cleaning up step.
 
 The goal for this step is to try to recalibrate base quality scores. The vendors tend to inflate the values of the bases in the reads.
@@ -404,7 +388,7 @@ It runs in 2 steps,
 java -Xmx2G -jar ${GATK_JAR} \
   -T BaseRecalibrator \
   -nct 2 \
-  -R ${REF}/b37.fasta \
+  -R ${REF}/hg19.fa \
   -knownSites ${REF}/dbSnp-137.vcf.gz \
   -L 1:47000000-47171000 \
   -o alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
@@ -413,32 +397,13 @@ java -Xmx2G -jar ${GATK_JAR} \
 java -Xmx2G -jar ${GATK_JAR} \
   -T PrintReads \
   -nct 2 \
-  -R ${REF}/b37.fasta \
+  -R ${REF}/hg19.fa \
   -BQSR alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -o alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 ```
 
-Just to see how things change let's make GATK recalibrate after a first pass
-```
-java -Xmx2G -jar ${GATK_JAR} \
-  -T BaseRecalibrator \
-  -nct 2 \
-  -R ${REF}/b37.fasta \
-  -knownSites ${REF}/dbSnp-137.vcf.gz \
-  -L 1:47000000-47171000 \
-  -o alignment/NA12878/NA12878.sorted.dup.recalibration_report.seconnd.grp \
-  -I alignment/NA12878/NA12878.sorted.dup.bam \
-  -BQSR alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp
 
-java -Xmx2G -jar ${GATK_JAR} \
-  -T AnalyzeCovariates \
-  -R ${REF}/b37.fasta \
-  -before alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
-  -after alignment/NA12878/NA12878.sorted.dup.recalibration_report.seconnd.grp \
-  -csv BQSR.csv \
-  -plots BQSR.pdf
-```
 
 The graphs don't mean much because we downsampled the data quite a bit. With a true whole genome or whole exome dataset we can see a bigger effect.
 
@@ -463,7 +428,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   --summaryCoverageThreshold 50 \
   --summaryCoverageThreshold 100 \
   --start 1 --stop 500 --nBins 499 -dt NONE \
-  -R ${REF}/b37.fasta \
+  -R ${REF}/hg19.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L 1:47000000-47171000
@@ -481,7 +446,7 @@ That means something is wrong in your coverage. A mix of WGS and WES would show 
 ```
 java -Xmx2G -jar ${PICARD_HOME}/CollectInsertSizeMetrics.jar \
   VALIDATION_STRINGENCY=SILENT \
-  REFERENCE_SEQUENCE=${REF}/b37.fasta \
+  REFERENCE_SEQUENCE=${REF}/hg19.fa \
   INPUT=alignment/NA12878/NA12878.sorted.dup.recal.bam \
   OUTPUT=alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv \
   HISTOGRAM_FILE=alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.histo.pdf \
@@ -492,7 +457,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 ```
 
 There is something interesting going on with our library ERR.
-From the pdf or the tab seperated file, can you tell what it is? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_insert.ex1.md)
+From the pdf or the tab seperated file, can you tell what it is? [Solution](solutions/_insert.ex1.md)
 
 ## Alignment metrics
 For the alignment metrics, we used to use ```samtools flagstat``` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
@@ -503,125 +468,40 @@ We prefer the Picard way of computing metrics
 ```
 java -Xmx2G -jar ${PICARD_HOME}/CollectAlignmentSummaryMetrics.jar \
   VALIDATION_STRINGENCY=SILENT \
-  REFERENCE_SEQUENCE=${REF}/b37.fasta \
+  REFERENCE_SEQUENCE=${REF}/hg19.fa \
   INPUT=alignment/NA12878/NA12878.sorted.dup.recal.bam \
   OUTPUT=alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv \
   METRIC_ACCUMULATION_LEVEL=LIBRARY
 
-# explore the results
+### explore the results
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 
 ```
 
+# Summary
+In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:
 
-# Variant calling
-Here we will try 3 variant callers.
-I won't go into the details of finding which variant is good or bad since this will be your next workshop.
-Here we will just call and view the variants.
+    We became familiar with FASTQ and SAM/BAM formats. 
+    
+    We checked read QC with BVAtools.
 
-Start with:
-```
-mkdir variants
-```
+    We trimmed unreliable bases from the read ends using Trimmomatic. 
 
-## Samtools
-```
-samtools mpileup -L 1000 -B -q 1 -D -S -g \
-  -f ${REF}/b37.fasta \
-  -r 1:47000000-47171000 \
-  alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  | bcftools view -vcg - \
-  > variants/mpileup.vcf
-```
+    We aligned the reads to the reference using BWA. 
 
-## GATK Unified Genotyper
-```
-java -Xmx2G -jar ${GATK_JAR} \
-  -T UnifiedGenotyper \
-  -R ${REF}/b37.fasta \
-  -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  -o variants/ug.vcf \
-  --genotype_likelihoods_model BOTH \
-  -dt none \
-  -L 1:46000000-47600000
-```
+    We sorted the alignments by chromosome position using PICARD. 
 
-## GATK Haplotyper
-```
-java -Xmx2G -jar ${GATK_JAR} \
-  -T HaplotypeCaller \
-  -R ${REF}/b37.fasta \
-  -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  -o variants/haplo.vcf \
-  -dt none \
-  -L 1:46000000-47600000
-```
+    We realigned short indels using GATK. 
+    
+    We fixed mate issues using PICARD.
+    
+    We recalibratie the Base Quality using GATK.
+    
+    We generate alignment metrics using GATK and PICARD.
+    
 
-Now we have variants from all three methods. Let's compress and index the vcfs for futur visualisation.
-```
-for i in variants/*.vcf;do bgzip -c $i > $i.gz ; tabix -p vcf $i.gz;done
-```
-
-Let's look at a compressed vcf.
-```
-zless -S variants/mpileup.vcf.gz
-```
-
-Details on the spec can be found here:
-http://vcftools.sourceforge.net/specs.html
-
-Fields vary from caller to caller. Some values are more constant.
-The ref vs alt alleles, variant quality (QUAL column) and the per-sample genotype (GT) values are almost always there.
-
-# Annotations
-We typically use snpEff but many use annovar and VEP as well.
-
-Let's run snpEff
-```
-java  -Xmx6G -jar ${SNPEFF_HOME}/snpEff.jar \
-  eff -v -c ${SNPEFF_HOME}/snpEff.config \
-  -o vcf \
-  -i vcf \
-  -stats variants/mpileup.snpeff.vcf.stats.html \
-  GRCh37.74 \
-  variants/mpileup.vcf \
-  > variants/mpileup.snpeff.vcf
-
-less -S variants/mpileup.snpeff.vcf
-```
-We can see in the vcf that snpEff added a few sections. These are hard to decipher directly from the VCF other tools or scripts,
-need to be used to make sens of this.
-
-For now we will skip this step since you will be working with gene annotations in your next workshop.
-
-Take a look at the HTML stats file snpEff created. It contains some metrics on the variants it analysed.
-
-## Visualisation
-Before jumping into IGV, we'll generate a track IGV can use to plot coverage.
-
-Try this:
-
-```
-igvtools count \
-  -f min,max,mean \
-  alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  alignment/NA12878/NA12878.sorted.dup.recal.bam.tdf \
-  b37
-```
-
-# IGV
-You can get IGV [here](http://www.broadinstitute.org/software/igv/download)
-
-Open it and choose b37 as the genome
-
-Open your BAM file, the tdf we just generated should load.
-Load your vcfs as well.
-
-Find an indel. What's different between the snp callers? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_vis.ex1.md)
-Go to 1:47050562-47051207 what is interesting here?  [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_vis.ex2.md)
-
-Look around...
+If you ever became truly lost in this lab, you can use the lab script to automatically perform all of the steps listed here. If you are logged into your CBW account, just run: `XX`. This produces all alignment files for NA12878. 
 
 
 ## Aknowledgments
-This tutorial is an adaptation to the one created by Louis letourneau [here](https://github.com/lletourn/Workshops/tree/kyoto201403). I would like to thank and acknowledge Louis for this help and for sharing his material. the format of the tutorial has been inspired from Mar Gonzalez Porta of Embl-EBI. I also want to acknowledge Joel Fillon, Louis Letrouneau (again), Francois Lefebvre, Maxime Caron and Guillaume Bourque for the help in building these pipelines and working with all the various datasets.
+I would like to thank and acknowledge Louis Letourneau for this help and for sharing his material. The format of the tutorial has been inspired from Mar Gonzalez Porta of Embl-EBI.
