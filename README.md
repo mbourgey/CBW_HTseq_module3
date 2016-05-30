@@ -223,7 +223,7 @@ The raw reads are now cleaned up of artefacts we can align the read to the refer
 
 In case you have multiple readsets or library you should align them separatly !
 
-Why should this be done separatly? [Solution](solutions/_aln.ex1.md)
+**Why should this be done separatly ?** [Solution](solutions/_aln1.md)
 
 ```
 mkdir -p alignment/NA12878/
