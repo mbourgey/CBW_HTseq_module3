@@ -1,2 +1,2 @@
-Of the 4003 input pairs 94.6% were kept 2.8% had only a valid read1 2.3% had only a valid read2 0.3% were fully discarded
+Of the 56512 input pairs 99.92% were kept 0.06% had only a valid read1 0.02% had only a valid read2 and none were fully discarded
 
