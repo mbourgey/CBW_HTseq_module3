@@ -1,3 +1,1 @@
-The first read is aligneed at 2 different locations. None of the shows a perfect alignment which could be considered the primary alignment.
-
-the best alignement is found because of the presence of the mate and his location. 
+because we sequenced paired-end reads and the bam file contains the 2 reads of the pair

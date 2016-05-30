@@ -259,27 +259,27 @@ Let's spend some time to explore bam files.
 
 try
 ```
-samtools view alignment/NA12878/NA12878.sorted.bam | head -n2
+samtools view alignment/NA12878/NA12878.sorted.bam | head -n4
 ```
 
 Here you have examples of alignment results.
 A full description of the flags can be found in the [SAM specification](http://samtools.sourceforge.net/SAM1.pdf)
 
-Try using [picards explain flag site](http://picard.sourceforge.net/explain-flags.html) to understand what is going on with your reads
+Try using [picards explain flag site](https://broadinstitute.github.io/picard/explain-flags.html) to understand what is going on with your reads
 
 The flag is the 2nd column.
 
-What do the flags of the first 2 reads mean? [Solution](solutions/_sambam.ex1.md)
+**What do the flags of the first 4 reads mean ?** [Solution](solutions/_sambam1.md)
 
-Let's take the 2nd one, the one that is in proper pair, and find it's pair.
+Let's take the 3nd one and find it's pair.
 
 try
 ```
-samtools view alignment/NA12878/NA12878.sorted.bam | grep ERR001742.6173685
+samtools view alignment/NA12878/NA12878.sorted.bam | grep "1313:19317:61840"
 
 ```
 
-Why did searching one name find both reads? [Solution](solutions/_sambam.ex2.md)
+**Why did searching one name find both reads ?** [Solution](solutions/_sambam4.md)
 
 
 You can use samtools to filter reads as well.
@@ -292,7 +292,7 @@ samtools view -c -f4 alignment/NA12878/NA12878.sorted.bam
 samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 ```
-How many reads mapped and unmapped were there? [Solution](solutions/_sambam.ex3.md)
+**How many reads mapped and unmapped were there ?** [Solution](solutions/_sambam2.md)
 
 
 Another useful bit of information in the SAM is the CIGAR string.
@@ -307,10 +307,9 @@ The exact details of the cigar string can be found in the SAM spec as well.
 Another good site
 
 # Cleaning up alignments
+We started by cleaning up the raw reads. Now we need to fix and clean some alignments.
 
 ## Indel realignment
-We started by cleaning up the raw reads. Now we need to fix some alignments.
-
 The first step for this is to realign around indels and snp dense regions.
 The Genome Analysis toolkit has a tool for this called IndelRealigner.
 
@@ -324,7 +323,7 @@ java -Xmx2G  -jar ${GATK_JAR} \
   -R ${REF}/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
-  -L 1
+  -L chr1
 
 java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
@@ -335,31 +334,16 @@ java -Xmx2G -jar ${GATK_JAR} \
 
 ```
 
-How could we make this go faster? [Solution](solutions/_realign.ex1.md)
-How many regions did it think needed cleaning? [Solution](solutions/_realign.ex2.md)
+**How could we make this go faster ?** [Solution](solutions/_realign1.md)
 
-Indel Realigner also makes sure the called deletions are left aligned when there is a microsat of homopolmer.
-```
-This
-ATCGAAAA-TCG
-into
-ATCG-AAAATCG
-
-or
-ATCGATATATATA--TCG
-into
-ATCG--ATATATATATCG
-```
-
-This makes it easier for down stream tools.
+**How many regions did it think needed cleaning ?** [Solution](solutions/_realign2.md)
 
 ## FixMates (optional)
-This step shouldn't be necessary...but it is some time.
+This step shouldn't be necessary...But it is some time.
 
 This goes through the BAM file and find entries which don't have their mate information written properly.
 
-This used to be a problem in the GATKs realigner, but they fixed it. It shouldn't be a problem with aligners like BWA, but there are always corner cases that create
-one-off corrdinates and such.
+This used to be a problem in the GATKs realigner, but they fixed it. It shouldn't be a problem with aligners like BWA, but there are always corner cases that create one-off corrdinates and such.
 
 This happened a lot with bwa backtrack. This happens less with bwa mem, but it still happens none the less.
 
@@ -372,8 +356,11 @@ java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
 
 ## Mark duplicates
 As the step says, this is to mark duplicate reads.
-What are duplicate reads? What are they caused by? [Solution](solutions/_markdup.ex1.md)
-What are the ways to detect them? [Solution](solutions/_markdup.ex2.md)
+
+**What are duplicate reads? What are they caused by ?** [Solution](solutions/_markdup1.md)
+
+
+**What are the ways to detect them ?** [Solution](solutions/_markdup2.md)
 
 Here we will use picards approach:
 ```
@@ -385,12 +372,18 @@ java -Xmx2G -jar ${PICARD_JAR} MarkDuplicates \
 ```
 
 We can look in the metrics output to see what happened.
+
+```
+less alignment/NA12878/NA12878.sorted.dup.metrics
+```
+
 We can see that it computed seperate measures for each library.
-Why is this important to do and not combine everything? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_markdup.ex3.md)
 
-How many duplicates were there? [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_markdup.ex4.md)
+**Why is this important to do and not combine everything ?** [Solution](solutions/_markdup5.md)
 
-This is on the high side, usually or rather, now since this is old data, this should be <2% for 2-3 lanes.
+**How many duplicates were there ?** [Solution](solutions/_markdup4.md)
+
+This is very low, we expect in general <2%.
 
 ## Recalibration
 This is the last BAM cleaning up step.

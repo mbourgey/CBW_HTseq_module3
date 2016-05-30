@@ -1,5 +1,4 @@
  
-   - normal 5.5% 
-   - tumor 11.3%
+   - 0.6% 
 
-Note that most of thses duplicates come form PCR reactions
+Note that most of theses duplicates come form PCR reactions
