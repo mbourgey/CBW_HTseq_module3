@@ -164,7 +164,9 @@ The way the lookup is done is by taking the the phred score adding 33 and using 
 Older illumina runs were using phred+64 instead of phred+33 to encode their fastq files.
 
 In the SRR dataset we also see some adapters.
-Why does this happen [Solution](solutions/_fastqQC.ex2.md)
+
+**Why does this happen?** 
+[Solution](solutions/_fastqQC2.md)
 
 
 ### Trimming
