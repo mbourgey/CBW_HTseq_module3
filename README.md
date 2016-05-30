@@ -229,7 +229,7 @@ In case you have multiple readsets or library you should align them separatly !
 mkdir -p alignment/NA12878/
 
 bwa mem -M -t 2 \
-  -R '@RG\tID:SRR_SRR_1\tSM:NA12878\tLB:SRR\tPU:runSRR_1\tCN:Broad Institute\tPL:ILLUMINA' \
+  -R '@RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPU:runNA12878_1\tCN:Broad Institute\tPL:ILLUMINA' \
   ${REF}/hg19.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
@@ -239,12 +239,12 @@ bwa mem -M -t 2 \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
 ```
 
-Why is it important to set Read Group information? [Solution](solutions/_aln.ex2.md)
+Why is it important to set Read Group information? [Solution](solutions/_aln2.md)
 
 The details of the fields can be found in the SAM/BAM specifications [Here](http://samtools.sourceforge.net/SAM1.pdf)
 For most cases, only the sample name, platform unit and library one are important. 
 
-Why did we pipe the output of one to the other? Could we have done it differently? [Solution](solutions/_aln.ex3.md)
+Why did we pipe the output of one to the other? Could we have done it differently? [Solution](solutions/_aln3.md)
 
 !We will explore the generated BAM latter!
 
