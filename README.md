@@ -239,18 +239,17 @@ bwa mem -M -t 2 \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
 ```
 
-Why is it important to set Read Group information? [Solution](solutions/_aln2.md)
+**Why is it important to set Read Group information ?** [Solution](solutions/_aln2.md)
 
 The details of the fields can be found in the SAM/BAM specifications [Here](http://samtools.sourceforge.net/SAM1.pdf)
 For most cases, only the sample name, platform unit and library one are important. 
 
-Why did we pipe the output of one to the other? Could we have done it differently? [Solution](solutions/_aln3.md)
+**Why did we pipe the output of one to the other? Could we have done it differently ?** [Solution](solutions/_aln3.md)
 
-!We will explore the generated BAM latter!
+
 
 # Lane merging (optional)
-**We now have alignments for each of the sequences lanes. This is not practical in it's current form. What we wan't to do now
-is merge the results into one BAM.**
+In case ywe generate multiple lane of sequencing or mutliple library. It is not practical to keep the data splited and all the reads should be merge into one massive file. 
 
 Since we identified the reads in the BAM with read groups, even after the merging, we can still identify the origin of each read.
 
