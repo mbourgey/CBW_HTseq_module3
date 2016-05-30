@@ -201,7 +201,7 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
 cat reads/NA12878/NA12878.trim.out
 ```
 
-What does Trimmomatic says it did? [Solution](solutions/_trim.ex2.md)
+What does Trimmomatic says it did? [Solution](solutions/_trim2.md)
 
 Let's look at the graphs now
 
@@ -213,7 +213,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName SRR --output postTrimQC/
 ```
 
-How does it look now? [Solution](solutions/_trim.ex3.md)
+How does it look now? [Solution](solutions/_trim3.md)
 
 
 # Alignment
