@@ -1,3 +1,5 @@
+**This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.**
+
 
 # Introduction to DNA-Seq processing
 This workshop will show you how to launch individual first steps of a DNA-Seq pipeline
@@ -24,8 +26,6 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 |chr1|17704860|18004860|
 
 
-This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.
-
 
 ## Original Setup
 
@@ -46,7 +46,7 @@ export TRIMMOMATIC_JAR=$ROOT_DIR/tools/Trimmomatic-0.36/trimmomatic-0.36.jar
 export PICARD_JAR=$ROOT_DIR/tools/picard-tools-1.141/picard.jar
 export GATK_JAR=$ROOT_DIR/tools/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar
 export BVATOOLS_JAR=$ROOT_DIR/tools/bvatools-1.6/bvatools-1.6-full.jar
-export REF=TO_BE_DET_PATH/kyotoWorkshop/references/
+export REF=$ROOT_DIR/reference/
 
 rm -rf $ROOT_DIR
 mkdir -p $ROOT_DIR
@@ -87,18 +87,29 @@ Try these commands
 ```
 zless -S raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 
+```
+These are fastq file. 
+
+**Could you descride the fastq format ?** [Solution](solutions/_fastq1.md)
+
+```
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz | head -n4
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
-From the second set of commands (the head), what was special about the output?
 
-**Why was it like that?** [Solution](solutions/_fastq2.md)
+**What was special about the output and why was it like that?** [Solution](solutions/_fastq2.md)
 
-You could also just count the reads
+
+You could also count the reads
+
 ```
 zgrep -c "^@SN1114" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
-Why shouldn't you just do
+
+We found  56512 reads
+
+**Why shouldn't you just do ?**
+
 ```
 zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
@@ -120,18 +131,18 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName SRR --output originalQC/
 ```
 
-Copy the images from the ```originalQC``` folder to your desktop and open the images.
+open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/workspace/` on your node. open ```originalQC``` folder and open the images.
 
-```
-scp -r <USER>@www.genome.med.kyoto-u.ac.jp:~/workshop/originalQC/ ./
-```
 
 What stands out in the graphs?
 [Solution](solutions/_fastqQC1.md)
 
+
 All the generated graphics have their uses. This being said 2 of them are particularly useful to get an overal picture of how good or bad a run went. These are the Quality box plots and the nucleotide content graphs.
 
 The Box plot shows the quality distribution of your data. In this case the reasons there are spikes and jumps in quality and length is because there are actually different libraries pooled together in the 2 fastq files. The sequencing lengths vary between 36,50,76 bp read lengths. The Graph goes > 100 because both ends are appended one after the other.
+![Phred quality score formula](img/QualityBoxPlot.png)
+
 
 The quality of a base is computated using the Phread quality score.
 ![Phred quality score formula](img/phredFormula.png)
