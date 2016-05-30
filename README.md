@@ -215,6 +215,8 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
 
 How does it look now? [Solution](solutions/_trim3.md)
 
+**Could we have done a better job ?** [Solution](solutions/_trim4.md)
+
 
 # Alignment
 The raw reads are now cleaned up of artefacts we can align the read to the reference.
