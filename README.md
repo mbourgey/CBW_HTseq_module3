@@ -195,10 +195,10 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
   reads/NA12878/NA12878_CBW_chr1_S1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_S2.t20l32.fastq.gz \
-  ILLUMINACLIP:adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
-  2> reads/NA12878/NA12878.SRR.trim.out
+  ILLUMINACLIP:${REF}/adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
+  2> reads/NA12878/NA12878.trim.out
 
-cat reads/NA12878/NA12878.SRR.trim.out
+cat reads/NA12878/NA12878.trim.out
 ```
 
 What does Trimmomatic says it did? [Solution](solutions/_trim.ex2.md)
