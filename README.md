@@ -163,27 +163,25 @@ The way the lookup is done is by taking the the phred score adding 33 and using 
 
 Older illumina runs were using phred+64 instead of phred+33 to encode their fastq files.
 
-In the SRR dataset we also see some adapters.
-
-**Why does this happen?** 
-[Solution](solutions/_fastqQC2.md)
 
 
 ### Trimming
 After this careful analysis of the raw data we see that
 - Some reads have bad 3' ends.
-- Some reads have adapter sequences in them.
+- no read has adapter sequences in it.
 
-Although nowadays this doesn't happen often, it does still happen. In some cases, miRNA, it is expected to have adapters.
+Although nowadays this doesn't happen often, it does still happen. In some cases, miRNA, it is expected to have adapters. Since they are not part of the genome of interest they should be removed if enough reads have them.
 
-Since they are not part of the genome of interest they should be removed if enough reads have them.
 
-To be able to remove the adapters we need to feed them to a tool. In this case we will use Trimmomatic. The adapter file is already in your work folder.
+To be able to remove adapters and low qualtity beses we will use Trimmomatic. 
+
+The adapter file is already in your reference  folder.
+
 We can look at the adapters
 ```
-cat adapters.fa
+cat $REF/adapters.fa
 ```
-**Why are there 2 different ones?** [Solution](https://github.com/lletourn/Workshops/blob/kyoto201403/blob/solutions/_trim.ex1.md)
+**Why are there 2 different ones?** [Solution](solutions/_trim1.md)
 
 
 Let's try removing them and see what happens.
