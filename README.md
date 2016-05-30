@@ -213,7 +213,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName SRR --output postTrimQC/
 ```
 
-How does it look now? [Solution](solutions/_trim3.md)
+**How does it look now ?** [Solution](solutions/_trim3.md)
 
 **Could we have done a better job ?** [Solution](solutions/_trim4.md)
 
