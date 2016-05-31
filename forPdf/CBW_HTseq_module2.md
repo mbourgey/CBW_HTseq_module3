@@ -1,10 +1,14 @@
-**This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.**
+**This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.**    
 
 
 # CBW HT-seq Module 2 - Genome Alignment   
 
  
-by Mathieu Bourgey, _Ph.D
+by Mathieu Bourgey, _Ph.D_
+
+
+\pagebreak
+
 
 ## Introduction
 This workshop will show you how to launch individual first steps of a DNA-Seq pipeline
@@ -20,8 +24,6 @@ NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 
 
 If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
-
-[Here is a script which provide the command lines for the analysis of NA12891 & NA12892](scripts/commands_parents.sh)
 
 For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
 We're going to focus on the reads extracted from a 300 kbp stretch of chromosome 1
@@ -82,7 +84,12 @@ The initial structure of your folders should look like this:
 # First data glance
 So you've just received an email saying that your data is ready for download from the sequencing center of your choice.
 
-**What should you do ?** [solution](solutions/_data.md)
+**What should you do ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
 
 
 ### Fastq files
@@ -95,14 +102,24 @@ zless -S raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
 These are fastq file. 
 
-**Could you descride the fastq format ?** [Solution](solutions/_fastq1.md)
+**Could you descride the fastq format ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
 
 ```
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz | head -n4
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
 
-**What was special about the output and why was it like that ?** [Solution](solutions/_fastq2.md)
+**What was special about the output and why was it like that?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
 
 
 You could also count the reads
@@ -118,7 +135,12 @@ We found  56512 reads
 ```
 zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
-[Solution](solutions/_fastq3.md)
+
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
 
 
 ### Quality
@@ -140,27 +162,33 @@ open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, 
 
 
 **What stands out in the graphs ?**
-[Solution](solutions/_fastqQC1.md)
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
 
 
 All the generated graphics have their uses. This being said 2 of them are particularly useful to get an overal picture of how good or bad a run went. 
 
 
-These are the Quality box plots 
-![Quality box plots](img/QualityBoxPlot.png)
+These are the Quality box plots (Figure 1)  
+
+![Quality box plots](QualityBoxPlot.png)
 
 
-and the nucleotide content graphs.
-![Nucleotide content](img/nucleotide_content.png)
+and the nucleotide content graphs (Figure 2).  
+
+![Nucleotide content](nucleotide_content.png)
 
 
 The Box plot shows the quality distribution of your data. The Graph goes > 100 because both ends are appended one after the other.
 
 
-The quality of a base is computated using the Phread quality score.
-![Phred quality score formula](img/phred_formula.png)
+The quality of a base is computated using the Phread quality score (Figure 3).  
+![Phred quality score formula](phred_formula.png)
 
-The formula outputs an integer that is encoded using an [ASCII](http://en.wikipedia.org/wiki/ASCII) table. 
+The formula outputs an integer that is encoded using an [ASCII](http://en.wikipedia.org/wiki/ASCII) table (Figure 4).  
 ![ASCII table](ascii_table.png)
 
 
@@ -186,7 +214,11 @@ We can look at the adapters
 ```
 cat $REF/adapters.fa
 ```
-**Why are there 2 different ones ?** [Solution](solutions/_trim1.md)
+**Why are there 2 different ones?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
 
 
 Let's try removing them and see what happens.
@@ -206,7 +238,12 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
 cat reads/NA12878/NA12878.trim.out
 ```
 
-**What does Trimmomatic says it did ?** [Solution](solutions/_trim2.md)
+**What does Trimmomatic says it did ?**
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
 
 Let's look at the graphs now
 
@@ -218,9 +255,19 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName ACTL8 --output postTrimQC/
 ```
 
-**How does it look now ?** [Solution](solutions/_trim3.md)
+**How does it look now ?** 
 
-**Could we have done a better job ?** [Solution](solutions/_trim4.md)
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+**Could we have done a better job ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
 
 
 # Alignment
@@ -228,7 +275,13 @@ The raw reads are now cleaned up of artefacts we can align the read to the refer
 
 In case you have multiple readsets or library you should align them separatly !
 
-**Why should this be done separatly ?** [Solution](solutions/_aln1.md)
+**Why should this be done separatly ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
 
 ```
 mkdir -p alignment/NA12878/
@@ -244,13 +297,23 @@ bwa mem -M -t 2 \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
 ```
 
-**Why is it important to set Read Group information ?** [Solution](solutions/_aln2.md)
+**Why is it important to set Read Group information ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
 
 The details of the fields can be found in the SAM/BAM specifications [Here](http://samtools.sourceforge.net/SAM1.pdf)
 For most cases, only the sample name, platform unit and library one are important. 
 
-**Why did we pipe the output of one to the other? Could we have done it differently ?** [Solution](solutions/_aln3.md)
+**Why did we pipe the output of one to the other? Could we have done it differently ?**
 
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
 
 
 # Lane merging (optional)
@@ -274,7 +337,14 @@ Try using [picards explain flag site](https://broadinstitute.github.io/picard/ex
 
 The flag is the 2nd column.
 
-**What do the flags of the first 4 reads mean ?** [Solution](solutions/_sambam1.md)
+**What do the flags of the first 4 reads mean ?**
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
 
 Let's take the 3nd one and find it's pair.
 
@@ -284,7 +354,12 @@ samtools view alignment/NA12878/NA12878.sorted.bam | grep "1313:19317:61840"
 
 ```
 
-**Why did searching one name find both reads ?** [Solution](solutions/_sambam4.md)
+**Why did searching one name find both reads ?**
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
 
 
 You can use samtools to filter reads as well.
@@ -297,7 +372,14 @@ samtools view -c -f4 alignment/NA12878/NA12878.sorted.bam
 samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 ```
-**How many reads mapped and unmapped were there ?** [Solution](solutions/_sambam2.md)
+**How many reads mapped and unmapped were there ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
 
 
 Another useful bit of information in the SAM is the CIGAR string.
@@ -339,9 +421,23 @@ java -Xmx2G -jar ${GATK_JAR} \
 
 ```
 
-**How could we make this go faster ?** [Solution](solutions/_realign1.md)
+**How could we make this go faster ?** 
 
-**How many regions did it think needed cleaning ?** [Solution](solutions/_realign2.md)
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
+**How many regions did it think needed cleaning ?**
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
 
 ## FixMates (optional)
 This step shouldn't be necessary...But it is some time.
@@ -362,10 +458,27 @@ java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
 ## Mark duplicates
 As the step says, this is to mark duplicate reads.
 
-**What are duplicate reads ? What are they caused by ?** [Solution](solutions/_markdup1.md)
+**What are duplicate reads? What are they caused by ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
 
 
-**What are the ways to detect them ?** [Solution](solutions/_markdup2.md)
+
+
+
+
+
+**What are the ways to detect them ?**
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
 
 Here we will use picards approach:
 ```
@@ -384,9 +497,25 @@ less alignment/NA12878/NA12878.sorted.dup.metrics
 
 We can see that it computed seperate measures for each library.
 
-**Why is this important to do and not combine everything ?** [Solution](solutions/_markdup5.md)
+**Why is this important to do and not combine everything ?** 
 
-**How many duplicates were there ?** [Solution](solutions/_markdup4.md)
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
+
+
+**How many duplicates were there ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
 
 This is very low, we expect in general <2%.
 
@@ -469,9 +598,27 @@ java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 ```
 
-**What is the insert size and the corresponding standard deviation ?** [Solution](solutions/_insert1.md)
+**What is the insert size and the corresponding standard deviation ?**
 
-**Is the insert-size important ?** [Solution](solutions/_insert2.md)
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
+
+
+**Is the insert-size important ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
+
 
 ## Alignment metrics
 For the alignment metrics, we used to use ```samtools flagstat``` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
@@ -492,7 +639,15 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 
 ```
 
-**What is the percent of aligned reads ?** [Solution](solutions/_alnMetrics1.md)
+**What is the percent of aligned reads ?** 
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
 
 # Summary
 In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:

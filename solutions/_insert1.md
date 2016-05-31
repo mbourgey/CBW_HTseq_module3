@@ -1,4 +1,7 @@
-Probably the normal and tumor samples had different shearing methods (or technician):
- 
-    - The shearing of the normal sample generated longer fragments (348 bp) but with low precision (SD -+ 91 bp)
-    - The shearing of the tumor sample generated shorter fragments (275 bp) but with high precision (SD -+ 23 bp)
+```
+head -9  alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv | tail -3 | cut -f5,6
+```
+  
+  - Insert size = 295bp
+  - SD = 58bp
+

@@ -1,10 +1,11 @@
 #set up
 export ROOT_DIR=~/workspace/HTSeq_module2
 export TRIMMOMATIC_JAR=$ROOT_DIR/tools/Trimmomatic-0.36/trimmomatic-0.36.jar
-export PICARD_JAR=$ROOT_DIR/tools/picard-tools-2.3.0/picard.jar
+export PICARD_JAR=$ROOT_DIR/tools/picard-tools-1.141/picard.jar
 export GATK_JAR=$ROOT_DIR/tools/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar
 export BVATOOLS_JAR=$ROOT_DIR/tools/bvatools-1.6/bvatools-1.6-full.jar
 export REF=$ROOT_DIR/reference/
+
 
 rm -rf $ROOT_DIR
 mkdir -p $ROOT_DIR
@@ -24,7 +25,7 @@ mkdir originalQC/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --read1 raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz \
   --read2 raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz \
-  --threads 2 --regionName SRR --output originalQC/
+  --threads 2 --regionName ACTL8 --output originalQC/
 
 #trim
 mkdir -p reads/NA12878/
@@ -46,13 +47,13 @@ mkdir postTrimQC/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --read1 reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   --read2 reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
-  --threads 2 --regionName SRR --output postTrimQC/
+  --threads 2 --regionName ACTL8 --output postTrimQC/
 
 # Alignment
 mkdir -p alignment/NA12878/
 
 bwa mem -M -t 2 \
-  -R '@RG\tID:SRR_SRR_1\tSM:NA12878\tLB:SRR\tPU:runSRR_1\tCN:Broad Institute\tPL:ILLUMINA' \
+  -R '@RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPU:runNA12878_1\tCN:Broad Institute\tPL:ILLUMINA' \
   ${REF}/hg19.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
@@ -91,7 +92,7 @@ java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
 
 # Mark duplicates
 java -Xmx2G -jar ${PICARD_JAR} MarkDuplicates \
-  REMOVE_DUPLICATES=false CREATE_MD5_FILE=true VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true \
+  REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true \
   INPUT=alignment/NA12878/NA12878.matefixed.sorted.bam \
   OUTPUT=alignment/NA12878/NA12878.sorted.dup.bam \
   METRICS_FILE=alignment/NA12878/NA12878.sorted.dup.metrics
@@ -126,7 +127,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   -R ${REF}/hg19.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  -L chr1:17704860-18004860
+  -L chr1:17700000-18100000
 
 java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
   VALIDATION_STRINGENCY=SILENT \
