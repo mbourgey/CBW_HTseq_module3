@@ -161,7 +161,7 @@ The quality of a base is computated using the Phread quality score.
 ![Phred quality score formula](img/phred_formula.png)
 
 The formula outputs an integer that is encoded using an [ASCII](http://en.wikipedia.org/wiki/ASCII) table. 
-![ASCII table](ascii_table.png)
+![ASCII table](img/ascii_table.png)
 
 
 The way the lookup is done is by taking the the phred score adding 33 and using this number as a lookup in the table. The Wikipedia entry for the [FASTQ format](http://en.wikipedia.org/wiki/FASTQ_format) has a summary of the varying values.
