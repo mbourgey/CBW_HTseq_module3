@@ -4,7 +4,7 @@
 # CBW HT-seq Module 2 - Genome Alignment   
 
  
-by Mathieu Bourgey, _Ph.D
+by Mathieu Bourgey, _Ph.D_
 
 ## Introduction
 This workshop will show you how to launch individual first steps of a DNA-Seq pipeline
