@@ -520,7 +520,7 @@ In this lab, we aligned reads from the sample NA12878 to the reference genome `h
 - We sorted the alignments by chromosome position using PICARD. 
 - We realigned short indels using GATK. 
 - We fixed mate issues using PICARD.
-- We recalibratie the Base Quality using GATK.
+- We recalibrate the Base Quality using GATK.
 - We generate alignment metrics using GATK and PICARD.  
 
 
