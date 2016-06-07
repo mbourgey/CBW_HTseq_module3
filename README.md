@@ -513,24 +513,15 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 ## Summary
 In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:
 
-    We became familiar with FASTQ and SAM/BAM formats. 
-    
-    We checked read QC with BVAtools.
-
-    We trimmed unreliable bases from the read ends using Trimmomatic. 
-
-    We aligned the reads to the reference using BWA. 
-
-    We sorted the alignments by chromosome position using PICARD. 
-
-    We realigned short indels using GATK. 
-    
-    We fixed mate issues using PICARD.
-    
-    We recalibratie the Base Quality using GATK.
-    
-    We generate alignment metrics using GATK and PICARD.
-    
+- We became familiar with FASTQ and SAM/BAM formats. 
+- We checked read QC with BVAtools.
+- We trimmed unreliable bases from the read ends using Trimmomatic. 
+- We aligned the reads to the reference using BWA. 
+- We sorted the alignments by chromosome position using PICARD. 
+- We realigned short indels using GATK. 
+- We fixed mate issues using PICARD.
+- We recalibratie the Base Quality using GATK.
+- We generate alignment metrics using GATK and PICARD.  
 
 
 ## Acknowledgments
