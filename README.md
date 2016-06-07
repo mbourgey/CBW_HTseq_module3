@@ -1,3 +1,13 @@
+---
+layout: post2
+permalink: /informatics_for_high-throughput_data_sequencing_2016_module2_lab/
+title: Informatics for High-Throughput Sequencing Data 2016 Module 2 lab
+header1: Informatics for High-Throughput Sequencing Data 2016
+header2: Module 2 lab
+image: CBW_High-throughput_icon.jpg
+---
+
+
 **This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.**
 
 
@@ -5,6 +15,37 @@
 
  
 by Mathieu Bourgey, _Ph.D_
+
+------------------
+
+## Table of contents
+1. [Introduction](## Introduction)
+2. [Setup the workshop](## Original Setup)
+ 2.1. [Connection to Amazon](### Amazon node)
+ 2.2. [Software requirements](### Software requirements)
+ 2.3. [Environment setup](### Environment setup)
+ 2.4. [Data files](### Data files)
+ 2.5. [Linux cheat sheet](### Cheat sheets)
+3. [Raw data](## First data glance)
+ 3.1 [Exploring fastq file](### Fastq files)
+ 3.2 [Computing fastq quality](### Quality)
+ 3.3 [Trimming fastq](### Trimming)
+4. [Aligning reads](## Alignment)
+  4.1. [Merging alignment(optional)](### Lane merging (optional))
+  4.2. [exploring the SAM/BAM files](### SAM/BAM)
+5. [Refining the alignment](## Cleaning up alignments)
+ 5.1 [Realigning arounf Indel](### Indel realignment)
+ 5.2 [Fixing mates (optional)](### FixMates (optional))
+ 5.3 [read duplictes](### Mark duplicates)
+ 5.4 [Base recalibration](### Recalibration)
+6. [Computing alignment metrics](## Extract Metrics)
+ 6.1. [Coverages metrics](### Compute coverage)
+ 6.2. [Insert size metrics](### Insert Size)
+ 6.3. [Alignments metrics](### Alignment metrics)
+7. [Summary](## Summary)
+8. [Acknowledgments](## Acknowledgments)
+
+
 
 ## Introduction
 This workshop will show you how to launch individual first steps of a DNA-Seq pipeline
@@ -33,6 +74,10 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 
 
 ## Original Setup
+
+### Amazon node
+
+Read these [directions] (http://bioinformatics-ca.github.io/logging_into_the_Amazon_cloud/) for information on how to log in to your assigned Amazon node. 
 
 ### Software requirements
 These are all already installed, but here are the original links.
@@ -79,7 +124,7 @@ The initial structure of your folders should look like this:
 * [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
 
 
-# First data glance
+## First data glance
 So you've just received an email saying that your data is ready for download from the sequencing center of your choice.
 
 **What should you do ?** [solution](solutions/_data.md)
@@ -223,7 +268,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
 **Could we have done a better job ?** [Solution](solutions/_trim4.md)
 
 
-# Alignment
+## Alignment
 The raw reads are now cleaned up of artefacts we can align the read to the reference.
 
 In case you have multiple readsets or library you should align them separatly !
@@ -253,13 +298,13 @@ For most cases, only the sample name, platform unit and library one are importan
 
 
 
-# Lane merging (optional)
+### Lane merging (optional)
 In case ywe generate multiple lane of sequencing or mutliple library. It is not practical to keep the data splited and all the reads should be merge into one massive file. 
 
 Since we identified the reads in the BAM with read groups, even after the merging, we can still identify the origin of each read.
 
 
-## SAM/BAM
+### SAM/BAM
 Let's spend some time to explore bam files.
 
 try
@@ -311,10 +356,10 @@ An in depth explanation of the CIGAR can be found [here](http://genome.sph.umich
 The exact details of the cigar string can be found in the SAM spec as well.
 Another good site
 
-# Cleaning up alignments
+## Cleaning up alignments
 We started by cleaning up the raw reads. Now we need to fix and clean some alignments.
 
-## Indel realignment
+### Indel realignment
 The first step for this is to realign around indels and snp dense regions.
 The Genome Analysis toolkit has a tool for this called IndelRealigner.
 
@@ -343,7 +388,7 @@ java -Xmx2G -jar ${GATK_JAR} \
 
 **How many regions did it think needed cleaning ?** [Solution](solutions/_realign2.md)
 
-## FixMates (optional)
+### FixMates (optional)
 This step shouldn't be necessary...But it is some time.
 
 This goes through the BAM file and find entries which don't have their mate information written properly.
@@ -359,7 +404,7 @@ java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
   OUTPUT=alignment/NA12878/NA12878.matefixed.sorted.bam
 ```
 
-## Mark duplicates
+### Mark duplicates
 As the step says, this is to mark duplicate reads.
 
 **What are duplicate reads ? What are they caused by ?** [Solution](solutions/_markdup1.md)
@@ -390,7 +435,7 @@ We can see that it computed seperate measures for each library.
 
 This is very low, we expect in general <2%.
 
-## Recalibration
+### Recalibration
 This is the last BAM cleaning up step.
 
 The goal for this step is to try to recalibrate base quality scores. The vendors tend to inflate the values of the bases in the reads.
@@ -420,10 +465,10 @@ java -Xmx2G -jar ${GATK_JAR} \
 ```
 
 
-# Extract Metrics
+## Extract Metrics
 Once your whole bam is generated, it's always a good thing to check the data again to see if everything makes sens.
 
-## Compute coverage
+### Compute coverage
 If you have data from a capture kit, you should see how well your targets worked
 
 Both GATK and BVATools have depth of coverage tools. We wrote our own in BVAtools because
@@ -446,7 +491,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L  chr1:17700000-18100000
 
-### Look at the coverage
+#### Look at the coverage
 less -S alignment/NA12878/NA12878.sorted.dup.recal.coverage.sample_interval_summary
 ```
 
@@ -455,7 +500,7 @@ Coverage is the expected ~30x.
 summaryCoverageThreshold is a usefull function to see if your coverage is uniform.
 Another way is to compare the mean to the median. If both are almost equal, your coverage is pretty flat. If both are quite different, that means something is wrong in your coverage. A mix of WGS and WES would show very different mean and median values.
 
-## Insert Size
+### Insert Size
 ```
 java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
   VALIDATION_STRINGENCY=SILENT \
@@ -473,7 +518,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 
 **Is the insert-size important ?** [Solution](solutions/_insert2.md)
 
-## Alignment metrics
+### Alignment metrics
 For the alignment metrics, we used to use ```samtools flagstat``` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
 You can try it if you want.
 
@@ -487,14 +532,14 @@ java -Xmx2G -jar ${PICARD_JAR} CollectAlignmentSummaryMetrics \
   OUTPUT=alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv \
   METRIC_ACCUMULATION_LEVEL=LIBRARY
 
-### explore the results
+#### explore the results
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 
 ```
 
 **What is the percent of aligned reads ?** [Solution](solutions/_alnMetrics1.md)
 
-# Summary
+## Summary
 In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:
 
     We became familiar with FASTQ and SAM/BAM formats. 
@@ -517,5 +562,5 @@ In this lab, we aligned reads from the sample NA12878 to the reference genome `h
     
 
 
-## Aknowledgments
+## Acknowledgments
 I would like to thank and acknowledge Louis Letourneau for this help and for sharing his material. The format of the tutorial has been inspired from Mar Gonzalez Porta of Embl-EBI.
