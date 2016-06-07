@@ -16,35 +16,6 @@ image: CBW_High-throughput_icon.jpg
  
 by Mathieu Bourgey, _Ph.D_
 
-------------------
-
-## Table of contents
-1. [Introduction](## Introduction)
-2. [Setup the workshop](## Original Setup)
-  1. [Connection to Amazon](### Amazon node)
-  2. [Software requirements](### Software requirements)
-  3. [Environment setup](### Environment setup)
-  4. [Data files](### Data files)
-  5. [Linux cheat sheet](### Cheat sheets)
-3. [Raw data](## First data glance)
-  1 [Exploring fastq file](### Fastq files)
-  2 [Computing fastq quality](### Quality)
-  3 [Trimming fastq](### Trimming)
-4. [Aligning reads](## Alignment)
-   1. [Merging alignment(optional)](### Lane merging (optional))
-   2. [exploring the SAM/BAM files](### SAM/BAM)
-5. [Refining the alignment](## Cleaning up alignments)
-  1 [Realigning arounf Indel](### Indel realignment)
-  2 [Fixing mates (optional)](### FixMates (optional))
-  3 [read duplictes](### Mark duplicates)
-  4 [Base recalibration](### Recalibration)
-6. [Computing alignment metrics](## Extract Metrics)
-  1. [Coverages metrics](### Compute coverage)
-  2. [Insert size metrics](### Insert Size)
-  3. [Alignments metrics](### Alignment metrics)
-7. [Summary](## Summary)
-8. [Acknowledgments](## Acknowledgments)
-
 
 
 ## Introduction
