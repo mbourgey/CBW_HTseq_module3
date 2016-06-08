@@ -81,6 +81,7 @@ ln -s ~/CourseData/HT_data/Module2/* .
 ### Data files
 
 The initial structure of your folders should look like this:
+
 ```
 \<ROOT\>
 |-- raw_reads/               # fastqs from the center (down sampled)
