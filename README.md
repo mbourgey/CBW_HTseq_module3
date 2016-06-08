@@ -21,10 +21,11 @@ by Mathieu Bourgey, _Ph.D_
 
 
 ## Introduction
+
 This workshop will show you how to launch individual first steps of a DNA-Seq pipeline
 
 We will be working on a 1000 genome sample, NA12878. You can find the whole raw data on the 1000 genome website:
-http://www.1000genomes.org/data
+<http://www.1000genomes.org/data>
 
 NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 
@@ -35,7 +36,7 @@ NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 
 If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
 
-[Here is a script which provide the command lines for the analysis of NA12891 & NA12892](scripts/commands_parents.sh)
+[Here is a script which provide the command lines for the analysis of NA12891 & NA12892](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/scripts/commands_parents.sh)
 
 For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
 We're going to focus on the reads extracted from a 300 kbp stretch of chromosome 1
@@ -53,6 +54,7 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 Read these [directions] (http://bioinformatics-ca.github.io/logging_into_the_Amazon_cloud/) for information on how to log in to your assigned Amazon node. 
 
 ### Software requirements
+
 These are all already installed, but here are the original links.
 
   * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
@@ -63,6 +65,7 @@ These are all already installed, but here are the original links.
 
 
 ### Environment setup
+
 ```
 export ROOT_DIR=~/workspace/HTSeq_module2
 export TRIMMOMATIC_JAR=$ROOT_DIR/tools/Trimmomatic-0.36/trimmomatic-0.36.jar
@@ -77,13 +80,9 @@ cd $ROOT_DIR
 ln -s ~/CourseData/HT_data/Module2/* .
 ```
 
-
-(I have made a change here)  
-
 ### Data files
 
 The initial structure of your folders should look like this:
-
 
 ```
 \<ROOT\>
@@ -98,33 +97,38 @@ The initial structure of your folders should look like this:
 ```
 
 ### Cheat sheets
+
 * [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
 
 
 ## First data glance
+
 So you've just received an email saying that your data is ready for download from the sequencing center of your choice.
 
-**What should you do ?** [solution](solutions/_data.md)
+**What should you do?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_data.md)
 
 
 ### Fastq files
+
 Let's first explore the fastq file.
 
 Try these commands
+
 ```
 zless -S raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 
 ```
+
 These are fastq file. 
 
-**Could you descride the fastq format ?** [Solution](solutions/_fastq1.md)
+**Could you descride the fastq format?** [Solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastq1.md)
 
 ```
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz | head -n4
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
 
-**What was special about the output and why was it like that ?** [Solution](solutions/_fastq2.md)
+**What was special about the output and why was it like that?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastq2.md)
 
 
 You could also count the reads
@@ -135,15 +139,17 @@ zgrep -c "^@SN1114" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 
 We found  56512 reads
 
-**Why shouldn't you just do ?**
+**Why shouldn't you just do?**
 
 ```
 zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
-[Solution](solutions/_fastq3.md)
+
+[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastq3.md)
 
 
 ### Quality
+
 We can't look at all the reads. Especially when working with whole genome 30x data. You could easilly have Billions of reads.
 
 Tools like FastQC and BVATools readsqc can be used to plot many metrics from these data sets.
@@ -161,29 +167,34 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
 open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/workspace/` on your node. open ```originalQC``` folder and open the images.
 
 
-**What stands out in the graphs ?**
-[Solution](solutions/_fastqQC1.md)
+**What stands out in the graphs?**
+
+[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastqQC1.md)
 
 
 All the generated graphics have their uses. This being said 2 of them are particularly useful to get an overal picture of how good or bad a run went. 
 
 
 These are the Quality box plots 
-![Quality box plots](img/QualityBoxPlot.png)
+
+![Quality box plots](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/QualityBoxPlot.png?raw=true)
 
 
 and the nucleotide content graphs.
-![Nucleotide content](img/nucleotide_content.png)
+
+![Nucleotide content](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/nucleotide_content.png?raw=true)
 
 
 The Box plot shows the quality distribution of your data. The Graph goes > 100 because both ends are appended one after the other.
 
 
 The quality of a base is computated using the Phread quality score.
-![Phred quality score formula](img/phred_formula.png)
+
+![Phred quality score formula](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/phred_formula.png?raw=true)
 
 The formula outputs an integer that is encoded using an [ASCII](http://en.wikipedia.org/wiki/ASCII) table. 
-![ASCII table](img/ascii_table.png)
+
+![ASCII table](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/ascii_table.png?raw=true)
 
 
 The way the lookup is done is by taking the the phred score adding 33 and using this number as a lookup in the table. The Wikipedia entry for the [FASTQ format](http://en.wikipedia.org/wiki/FASTQ_format) has a summary of the varying values.
@@ -193,7 +204,9 @@ Older illumina runs were using phred+64 instead of phred+33 to encode their fast
 
 
 ### Trimming
+
 After this careful analysis of the raw data we see that
+
 - Some reads have bad 3' ends.
 - no read has adapter sequences in it.
 
@@ -205,13 +218,16 @@ To be able to remove adapters and low qualtity beses we will use Trimmomatic.
 The adapter file is already in your reference  folder.
 
 We can look at the adapters
+
 ```
 cat $REF/adapters.fa
 ```
-**Why are there 2 different ones ?** [Solution](solutions/_trim1.md)
+
+**Why are there 2 different ones ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim1.md)
 
 
 Let's try removing them and see what happens.
+
 ```
 mkdir -p reads/NA12878/
 
@@ -228,7 +244,7 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
 cat reads/NA12878/NA12878.trim.out
 ```
 
-**What does Trimmomatic says it did ?** [Solution](solutions/_trim2.md)
+**What does Trimmomatic says it did ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim2.md)
 
 Let's look at the graphs now
 
@@ -240,17 +256,20 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName ACTL8 --output postTrimQC/
 ```
 
-**How does it look now ?** [Solution](solutions/_trim3.md)
+**How does it look now?** 
+[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim3.md)
 
-**Could we have done a better job ?** [Solution](solutions/_trim4.md)
+**Could we have done a better job?** 
+[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim4.md)
 
 
 ## Alignment
+
 The raw reads are now cleaned up of artefacts we can align the read to the reference.
 
 In case you have multiple readsets or library you should align them separatly !
 
-**Why should this be done separatly ?** [Solution](solutions/_aln1.md)
+**Why should this be done separatly?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_aln1.md)
 
 ```
 mkdir -p alignment/NA12878/
@@ -266,25 +285,28 @@ bwa mem -M -t 2 \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
 ```
 
-**Why is it important to set Read Group information ?** [Solution](solutions/_aln2.md)
+**Why is it important to set Read Group information?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_aln2.md)
 
 The details of the fields can be found in the SAM/BAM specifications [Here](http://samtools.sourceforge.net/SAM1.pdf)
 For most cases, only the sample name, platform unit and library one are important. 
 
-**Why did we pipe the output of one to the other? Could we have done it differently ?** [Solution](solutions/_aln3.md)
+**Why did we pipe the output of one to the other? Could we have done it differently?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_aln3.md)
 
 
 
 ### Lane merging (optional)
+
 In case ywe generate multiple lane of sequencing or mutliple library. It is not practical to keep the data splited and all the reads should be merge into one massive file. 
 
 Since we identified the reads in the BAM with read groups, even after the merging, we can still identify the origin of each read.
 
 
 ### SAM/BAM
+
 Let's spend some time to explore bam files.
 
 try
+
 ```
 samtools view alignment/NA12878/NA12878.sorted.bam | head -n4
 ```
@@ -296,17 +318,18 @@ Try using [picards explain flag site](https://broadinstitute.github.io/picard/ex
 
 The flag is the 2nd column.
 
-**What do the flags of the first 4 reads mean ?** [Solution](solutions/_sambam1.md)
+**What do the flags of the first 4 reads mean?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_sambam1.md)
 
 Let's take the 3nd one and find it's pair.
 
 try
+
 ```
 samtools view alignment/NA12878/NA12878.sorted.bam | grep "1313:19317:61840"
 
 ```
 
-**Why did searching one name find both reads ?** [Solution](solutions/_sambam4.md)
+**Why did searching one name find both reads?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_sambam4.md)
 
 
 You can use samtools to filter reads as well.
@@ -319,7 +342,8 @@ samtools view -c -f4 alignment/NA12878/NA12878.sorted.bam
 samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 ```
-**How many reads mapped and unmapped were there ?** [Solution](solutions/_sambam2.md)
+
+**How many reads mapped and unmapped were there?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_sambam2.md)
 
 
 Another useful bit of information in the SAM is the CIGAR string.
@@ -334,13 +358,16 @@ The exact details of the cigar string can be found in the SAM spec as well.
 Another good site
 
 ## Cleaning up alignments
+
 We started by cleaning up the raw reads. Now we need to fix and clean some alignments.
 
 ### Indel realignment
+
 The first step for this is to realign around indels and snp dense regions.
 The Genome Analysis toolkit has a tool for this called IndelRealigner.
 
 It basically runs in 2 steps
+
 1- Find the targets
 2- Realign them.
 
@@ -361,11 +388,12 @@ java -Xmx2G -jar ${GATK_JAR} \
 
 ```
 
-**How could we make this go faster ?** [Solution](solutions/_realign1.md)
+**How could we make this go faster?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_realign1.md)
 
-**How many regions did it think needed cleaning ?** [Solution](solutions/_realign2.md)
+**How many regions did it think needed cleaning?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_realign2.md)
 
 ### FixMates (optional)
+
 This step shouldn't be necessary...But it is some time.
 
 This goes through the BAM file and find entries which don't have their mate information written properly.
@@ -382,14 +410,16 @@ java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
 ```
 
 ### Mark duplicates
+
 As the step says, this is to mark duplicate reads.
 
-**What are duplicate reads ? What are they caused by ?** [Solution](solutions/_markdup1.md)
+**What are duplicate reads ? What are they caused by ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup1.md)
 
 
-**What are the ways to detect them ?** [Solution](solutions/_markdup2.md)
+**What are the ways to detect them ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup2.md)
 
 Here we will use picards approach:
+
 ```
 java -Xmx2G -jar ${PICARD_JAR} MarkDuplicates \
   REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true \
@@ -406,13 +436,14 @@ less alignment/NA12878/NA12878.sorted.dup.metrics
 
 We can see that it computed seperate measures for each library.
 
-**Why is this important to do and not combine everything ?** [Solution](solutions/_markdup5.md)
+**Why is this important to do and not combine everything ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup5.md)
 
-**How many duplicates were there ?** [Solution](solutions/_markdup4.md)
+**How many duplicates were there ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup4.md)
 
 This is very low, we expect in general <2%.
 
 ### Recalibration
+
 This is the last BAM cleaning up step.
 
 The goal for this step is to try to recalibrate base quality scores. The vendors tend to inflate the values of the bases in the reads.
@@ -443,9 +474,11 @@ java -Xmx2G -jar ${GATK_JAR} \
 
 
 ## Extract Metrics
+
 Once your whole bam is generated, it's always a good thing to check the data again to see if everything makes sens.
 
 ### Compute coverage
+
 If you have data from a capture kit, you should see how well your targets worked
 
 Both GATK and BVATools have depth of coverage tools. We wrote our own in BVAtools because
@@ -454,6 +487,7 @@ Both GATK and BVATools have depth of coverage tools. We wrote our own in BVAtool
 - We were missing some output that we wanted from the GATK's one (GC per interval, valid pairs, etc)
 
 Here we'll use the GATK one
+
 ```
 java  -Xmx2G -jar ${GATK_JAR} \
   -T DepthOfCoverage \
@@ -478,6 +512,7 @@ summaryCoverageThreshold is a usefull function to see if your coverage is unifor
 Another way is to compare the mean to the median. If both are almost equal, your coverage is pretty flat. If both are quite different, that means something is wrong in your coverage. A mix of WGS and WES would show very different mean and median values.
 
 ### Insert Size
+
 ```
 java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
   VALIDATION_STRINGENCY=SILENT \
@@ -491,11 +526,12 @@ java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 ```
 
-**What is the insert size and the corresponding standard deviation ?** [Solution](solutions/_insert1.md)
+**What is the insert size and the corresponding standard deviation ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_insert1.md)
 
-**Is the insert-size important ?** [Solution](solutions/_insert2.md)
+**Is the insert-size important ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_insert2.md)
 
 ### Alignment metrics
+
 For the alignment metrics, we used to use ```samtools flagstat``` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
 You can try it if you want.
 
@@ -510,13 +546,15 @@ java -Xmx2G -jar ${PICARD_JAR} CollectAlignmentSummaryMetrics \
   METRIC_ACCUMULATION_LEVEL=LIBRARY
 
 #### explore the results
+
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 
 ```
 
-**What is the percent of aligned reads ?** [Solution](solutions/_alnMetrics1.md)
+**What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_alnMetrics1.md)
 
 ## Summary
+
 In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:
 
 - We became familiar with FASTQ and SAM/BAM formats. 
@@ -531,4 +569,5 @@ In this lab, we aligned reads from the sample NA12878 to the reference genome `h
 
 
 ## Acknowledgments
+
 I would like to thank and acknowledge Louis Letourneau for this help and for sharing his material. The format of the tutorial has been inspired from Mar Gonzalez Porta of Embl-EBI.
