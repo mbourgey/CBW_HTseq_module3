@@ -82,7 +82,7 @@ ln -s ~/CourseData/HT_data/Module2/* .
 
 The initial structure of your folders should look like this:
 ```
-<ROOT>
+\<ROOT\>
 |-- raw_reads/               # fastqs from the center (down sampled)
     `-- NA12878/             # Child sample directory
     `-- NA12891/             # Father sample directory
