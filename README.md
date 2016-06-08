@@ -78,9 +78,12 @@ ln -s ~/CourseData/HT_data/Module2/* .
 ```
 
 
+(I have made a change here)  
+
 ### Data files
 
 The initial structure of your folders should look like this:
+
 
 ```
 \<ROOT\>
