@@ -260,7 +260,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
 [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim3.md)
 
 **Could we have done a better job?** 
-[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim4.md)
+[solution](https://github.com/mbourgey/CBW_HTseq_module2/blob/master/solutions/_trim4.md)
 
 
 ## Alignment
