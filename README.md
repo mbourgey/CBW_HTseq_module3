@@ -36,7 +36,7 @@ NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 
 If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
 
-[Here is a script which provide the command lines for the analysis of NA12891 & NA12892](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/scripts/commands_parents.sh)
+[The analysis of NA12891 & NA12892 will be done during the Integrated Assignment session](https://github.com/bioinformatics-ca/bioinformatics-ca.github.io/blob/master/2016_workshops/ht-seq/informatics_on_high_throughput_sequencing_data_2016.md#assignment)
 
 For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
 We're going to focus on the reads extracted from a 300 kbp stretch of chromosome 1
