@@ -57,7 +57,7 @@ Read these [directions] (http://bioinformatics-ca.github.io/logging_into_the_Ama
 
 These are all already installed, but here are the original links.
 
-  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
+  * [BVATools](http://bitbucket.org/mugqic/bvatools/downloads/)
   * [SAMTools](http://sourceforge.net/projects/samtools/)
   * [BWA](http://bio-bwa.sourceforge.net/)
   * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
@@ -81,7 +81,7 @@ export REF=$WORK_DIR/reference/
 rm -rf $WORK_DIR
 mkdir -p $WORK_DIR
 cd $WORK_DIR
-ln -s ~/CourseData/HT_data/Module3/* 
+ln -s ~/CourseData/HT_data/Module3/* .
 ```
 
 ### Data files
@@ -353,10 +353,11 @@ samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 Another useful bit of information in the SAM is the CIGAR string.
 It's the 6th column in the file. This column explains how the alignment was achieved.
-M == base aligns *but doesn't have to be a match*. A SNP will have an M even if it disagrees with the reference.
-I == Insertion
-D == Deletion
-S == soft-clips. These are handy to find un removed adapters, viral insertions, etc.
+
+ * M == base aligns *but doesn't have to be a match*. A SNP will have an M even if it disagrees with the reference.
+ * I == Insertion
+ * D == Deletion
+ * S == soft-clips. These are handy to find un removed adapters, viral insertions, etc.
 
 An in depth explanation of the CIGAR can be found [here](http://genome.sph.umich.edu/wiki/SAM)
 The exact details of the cigar string can be found in the SAM spec as well.
