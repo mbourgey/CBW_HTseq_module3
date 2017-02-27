@@ -9,4 +9,4 @@ Usually, we consider:
  
    - A good alignment if > 90%
    - Reference assembly issues if [75-90]%
-   - Probably a mismatch between sample and ref if < 75 %
+   - Probably a mismatch between sample and reference if < 75 %
