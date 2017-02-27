@@ -1,9 +1,9 @@
 ---
 layout: post2
-permalink: /informatics_for_high-throughput_data_sequencing_2016_module2_lab/
-title: Informatics for High-Throughput Sequencing Data 2016 Module 2 lab
-header1: Informatics for High-Throughput Sequencing Data 2016
-header2: Module 2 lab
+permalink: /informatics_for_high-throughput_data_sequencing_2017_module3_lab/
+title: Informatics for High-Throughput Sequencing Data 2017 Module 3 lab
+header1: Informatics for High-Throughput Sequencing Data 2017
+header2: Module 3 lab
 image: CBW_High-throughput_icon.jpg
 ---
 
@@ -13,7 +13,7 @@ image: CBW_High-throughput_icon.jpg
 
 -----------------------
 
-# CBW HT-seq Module 2 - Genome Alignment   
+# CBW HT-seq Module 3 - Genome Alignment   
 
  
 by Mathieu Bourgey, _Ph.D_
@@ -62,22 +62,26 @@ These are all already installed, but here are the original links.
   * [BWA](http://bio-bwa.sourceforge.net/)
   * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
   * [Picard](http://broadinstitute.github.io/picard/)
+  * [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)
 
 
 ### Environment setup
 
 ```
-export ROOT_DIR=~/workspace/HTSeq_module2
-export TRIMMOMATIC_JAR=$ROOT_DIR/tools/Trimmomatic-0.36/trimmomatic-0.36.jar
-export PICARD_JAR=$ROOT_DIR/tools/picard-tools-1.141/picard.jar
-export GATK_JAR=$ROOT_DIR/tools/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$ROOT_DIR/tools/bvatools-1.6/bvatools-1.6-full.jar
-export REF=$ROOT_DIR/reference/
+#set up
+export SOFT_DIR=/usr/local/
+export WORK_DIR=~/workspace/HTseq/Module3/
+export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.36/trimmomatic-0.36.jar
+export PICARD_JAR=$SOFT_DIR/picard/picard.jar
+export GATK_JAR=$SOFT_DIR/GATK/GenomeAnalysisTK.jar
+export BVATOOLS_JAR=$SOFT_DIR/bvatools/bvatools-1.6-full.jar
+export REF=$WORK_DIR/reference/
 
-rm -rf $ROOT_DIR
-mkdir -p $ROOT_DIR
-cd $ROOT_DIR
-ln -s ~/CourseData/HT_data/Module2/* .
+
+rm -rf $WORK_DIR
+mkdir -p $WORK_DIR
+cd $WORK_DIR
+ln -s ~/CourseData/HT_data/Module3/* 
 ```
 
 ### Data files
@@ -94,19 +98,19 @@ ROOT
 `-- reference/               # hg19 reference and indexes
 `-- scripts/                 # command lines scripts
 `-- saved_results/           # precomputed final files
-`-- tools/                   # Some tools for the analysis 
 ```
 
 ### Cheat sheets
 
 * [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
+* [comands file of this module](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/scripts/commands.sh)
 
 
 ## First data glance
 
 So you've just received an email saying that your data is ready for download from the sequencing center of your choice.
 
-**What should you do?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_data.md)
+**What should you do?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_data.md)
 
 
 ### Fastq files
@@ -122,14 +126,14 @@ zless -S raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 
 These are fastq file. 
 
-**Could you descride the fastq format?** [Solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastq1.md)
+**Could you descride the fastq format?** [Solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_fastq1.md)
 
 ```
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz | head -n4
 zcat raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz | head -n4
 ```
 
-**What was special about the output and why was it like that?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastq2.md)
+**What was special about the output and why was it like that?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_fastq2.md)
 
 
 You could also count the reads
@@ -146,7 +150,7 @@ We found  56512 reads
 zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 ```
 
-[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastq3.md)
+[solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_fastq3.md)
 
 
 ### Quality
@@ -170,7 +174,7 @@ open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, 
 
 **What stands out in the graphs?**
 
-[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_fastqQC1.md)
+[solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_fastqQC1.md)
 
 
 All the generated graphics have their uses. This being said 2 of them are particularly useful to get an overal picture of how good or bad a run went. 
@@ -178,12 +182,12 @@ All the generated graphics have their uses. This being said 2 of them are partic
 
 These are the Quality box plots 
 
-![Quality box plots](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/QualityBoxPlot.png?raw=true)
+![Quality box plots](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/QualityBoxPlot.png?raw=true)
 
 
 and the nucleotide content graphs.
 
-![Nucleotide content](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/nucleotide_content.png?raw=true)
+![Nucleotide content](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/nucleotide_content.png?raw=true)
 
 
 The Box plot shows the quality distribution of your data. The Graph goes > 100 because both ends are appended one after the other.
@@ -191,11 +195,11 @@ The Box plot shows the quality distribution of your data. The Graph goes > 100 b
 
 The quality of a base is computated using the Phread quality score.
 
-![Phred quality score formula](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/phred_formula.png?raw=true)
+![Phred quality score formula](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/phred_formula.png?raw=true)
 
 The formula outputs an integer that is encoded using an [ASCII](http://en.wikipedia.org/wiki/ASCII) table. 
 
-![ASCII table](https://github.com/mbourgey/CBW_HTseq_module2/blob/c4e60b9f58dd25d5f871c06c428627b85562a778/img/ascii_table.png?raw=true)
+![ASCII table](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/ascii_table.png?raw=true)
 
 
 The way the lookup is done is by taking the the phred score adding 33 and using this number as a lookup in the table. The Wikipedia entry for the [FASTQ format](http://en.wikipedia.org/wiki/FASTQ_format) has a summary of the varying values.
@@ -224,7 +228,7 @@ We can look at the adapters
 cat $REF/adapters.fa
 ```
 
-**Why are there 2 different ones ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim1.md)
+**Why are there 2 different ones ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_trim1.md)
 
 
 Let's try removing them and see what happens.
@@ -245,7 +249,7 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
 cat reads/NA12878/NA12878.trim.out
 ```
 
-**What does Trimmomatic says it did ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim2.md)
+**What does Trimmomatic says it did ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_trim2.md)
 
 Let's look at the graphs now
 
@@ -258,10 +262,10 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
 ```
 
 **How does it look now?** 
-[solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_trim3.md)
+[solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_trim3.md)
 
 **Could we have done a better job?** 
-[solution](https://github.com/mbourgey/CBW_HTseq_module2/blob/master/solutions/_trim4.md)
+[solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_trim4.md)
 
 
 ## Alignment
@@ -270,7 +274,7 @@ The raw reads are now cleaned up of artefacts we can align the read to the refer
 
 In case you have multiple readsets or library you should align them separatly !
 
-**Why should this be done separatly?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_aln1.md)
+**Why should this be done separatly?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_aln1.md)
 
 ```
 mkdir -p alignment/NA12878/
@@ -286,12 +290,12 @@ bwa mem -M -t 2 \
   CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
 ```
 
-**Why is it important to set Read Group information?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_aln2.md)
+**Why is it important to set Read Group information?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_aln2.md)
 
 The details of the fields can be found in the SAM/BAM specifications [Here](http://samtools.sourceforge.net/SAM1.pdf)
 For most cases, only the sample name, platform unit and library one are important. 
 
-**Why did we pipe the output of one to the other? Could we have done it differently?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_aln3.md)
+**Why did we pipe the output of one to the other? Could we have done it differently?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_aln3.md)
 
 
 
@@ -319,7 +323,7 @@ Try using [picards explain flag site](https://broadinstitute.github.io/picard/ex
 
 The flag is the 2nd column.
 
-**What do the flags of the first 4 reads mean?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_sambam1.md)
+**What do the flags of the first 4 reads mean?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_sambam1.md)
 
 Let's take the 3nd one and find it's pair.
 
@@ -330,7 +334,7 @@ samtools view alignment/NA12878/NA12878.sorted.bam | grep "1313:19317:61840"
 
 ```
 
-**Why did searching one name find both reads?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_sambam4.md)
+**Why did searching one name find both reads?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_sambam4.md)
 
 
 You can use samtools to filter reads as well.
@@ -344,7 +348,7 @@ samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 ```
 
-**How many reads mapped and unmapped were there?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_sambam2.md)
+**How many reads mapped and unmapped were there?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_sambam2.md)
 
 
 Another useful bit of information in the SAM is the CIGAR string.
@@ -389,9 +393,9 @@ java -Xmx2G -jar ${GATK_JAR} \
 
 ```
 
-**How could we make this go faster?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_realign1.md)
+**How could we make this go faster?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign1.md)
 
-**How many regions did it think needed cleaning?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_realign2.md)
+**How many regions did it think needed cleaning?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign2.md)
 
 ### FixMates (optional)
 
@@ -401,30 +405,30 @@ This goes through the BAM file and find entries which don't have their mate info
 
 This used to be a problem in the GATKs realigner, but they fixed it. It shouldn't be a problem with aligners like BWA, but there are always corner cases that create one-off corrdinates and such.
 
-This happened a lot with bwa backtrack. This happens less with bwa mem, but it still happens none the less.
+This happened a lot with bwa backtrack. This happens less with bwa mem and recent GATK so we will skip today.
 
 ```
-java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
-  VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000 \
-  INPUT=alignment/NA12878/NA12878.realigned.sorted.bam \
-  OUTPUT=alignment/NA12878/NA12878.matefixed.sorted.bam
+#java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
+#VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000 \
+#INPUT=alignment/NA12878/NA12878.realigned.sorted.bam \
+#OUTPUT=alignment/NA12878/NA12878.matefixed.sorted.bam
 ```
 
 ### Mark duplicates
 
 As the step says, this is to mark duplicate reads.
 
-**What are duplicate reads ? What are they caused by ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup1.md)
+**What are duplicate reads ? What are they caused by ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup1.md)
 
 
-**What are the ways to detect them ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup2.md)
+**What are the ways to detect them ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup2.md)
 
 Here we will use picards approach:
 
 ```
 java -Xmx2G -jar ${PICARD_JAR} MarkDuplicates \
   REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true \
-  INPUT=alignment/NA12878/NA12878.matefixed.sorted.bam \
+  INPUT=alignment/NA12878/NA12878.realigned.sorted.bam \
   OUTPUT=alignment/NA12878/NA12878.sorted.dup.bam \
   METRICS_FILE=alignment/NA12878/NA12878.sorted.dup.metrics
 ```
@@ -437,9 +441,9 @@ less alignment/NA12878/NA12878.sorted.dup.metrics
 
 We can see that it computed seperate measures for each library.
 
-**Why is this important to do and not combine everything ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup5.md)
+**Why is this important to do and not combine everything ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup5.md)
 
-**How many duplicates were there ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_markdup4.md)
+**How many duplicates were there ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup4.md)
 
 This is very low, we expect in general <2%.
 
@@ -527,9 +531,9 @@ java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 ```
 
-**What is the insert size and the corresponding standard deviation ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_insert1.md)
+**What is the insert size and the corresponding standard deviation ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_insert1.md)
 
-**Is the insert-size important ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_insert2.md)
+**Is the insert-size important ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_insert2.md)
 
 ### Alignment metrics
 
@@ -552,7 +556,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 
 ```
 
-**What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module2/raw/c4e60b9f58dd25d5f871c06c428627b85562a778/solutions/_alnMetrics1.md)
+**What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_alnMetrics1.md)
 
 ## Summary
 
