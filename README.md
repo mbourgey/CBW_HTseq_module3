@@ -419,10 +419,12 @@ This happened a lot with bwa backtrack. This happens less with bwa mem and recen
 
 As the step says, this is to mark duplicate reads.
 
-**What are duplicate reads ? What are they caused by ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup1.md)
+**What are duplicate reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup1.md)
+
+**What are they caused by ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup2.md)
 
 
-**What are the ways to detect them ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup2.md)
+**What are the ways to detect them ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup3.md)
 
 Here we will use picards approach:
 
@@ -439,14 +441,14 @@ We can look in the metrics output to see what happened.
 ```
 less alignment/NA12878/NA12878.sorted.dup.metrics
 ```
+**How many duplicates were there ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup4.md)
+
+This is very low, we expect in general <2%.
 
 We can see that it computed seperate measures for each library.
 
 **Why is this important to do and not combine everything ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup5.md)
 
-**How many duplicates were there ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup4.md)
-
-This is very low, we expect in general <2%.
 
 ### Recalibration
 
