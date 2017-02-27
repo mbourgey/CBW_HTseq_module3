@@ -1,7 +1,7 @@
 **This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/deed.en_US). This means that you are able to copy, share and modify the work, as long as the result is distributed under the same license.**    
 
 
-# CBW HT-seq Module 2 - Genome Alignment   
+# CBW HT-seq Module 3 - Genome Alignment   
 
  
 by Mathieu Bourgey, _Ph.D_
@@ -39,26 +39,29 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 ### Software requirements
 These are all already installed, but here are the original links.
 
-  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads)
+  * [BVATools](https://bitbucket.org/mugqic/bvatools/downloads/)
   * [SAMTools](http://sourceforge.net/projects/samtools/)
   * [BWA](http://bio-bwa.sourceforge.net/)
   * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
   * [Picard](http://broadinstitute.github.io/picard/)
-
+  * [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)
+  
 
 ### Environment setup
 ```
-export ROOT_DIR=~/workspace/HTSeq_module2
-export TRIMMOMATIC_JAR=$ROOT_DIR/tools/Trimmomatic-0.36/trimmomatic-0.36.jar
-export PICARD_JAR=$ROOT_DIR/tools/picard-tools-1.141/picard.jar
-export GATK_JAR=$ROOT_DIR/tools/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$ROOT_DIR/tools/bvatools-1.6/bvatools-1.6-full.jar
-export REF=$ROOT_DIR/reference/
+export SOFT_DIR=/usr/local/
+export WORK_DIR=~/workspace/HTseq/Module3/
+export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.36/trimmomatic-0.36.jar
+export PICARD_JAR=$SOFT_DIR/picard/picard.jar
+export GATK_JAR=$SOFT_DIR/GATK/GenomeAnalysisTK.jar
+export BVATOOLS_JAR=$SOFT_DIR/bvatools/bvatools-1.6-full.jar
+export REF=$WORK_DIR/reference/
 
-rm -rf $ROOT_DIR
-mkdir -p $ROOT_DIR
-cd $ROOT_DIR
-ln -s ~/CourseData/HT_data/Module2/* .
+
+rm -rf $WORK_DIR
+mkdir -p $WORK_DIR
+cd $WORK_DIR
+ln -s ~/CourseData/HT_data/Module3/* .
 ```
 
 
@@ -74,11 +77,12 @@ The initial structure of your folders should look like this:
 `-- reference/               # hg19 reference and indexes
 `-- scripts/                 # command lines scripts
 `-- saved_results/           # precomputed final files
-`-- tools/                   # Some tools for the analysis 
 ```
 
 ### Cheat sheets
 * [Unix comand line cheat sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
+* [comands file of this module](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/scripts/commands.sh)
+
 
 
 # First data glance
@@ -270,6 +274,8 @@ _____________________________________________________________
 
 
 
+\pagebreak
+
 # Alignment
 The raw reads are now cleaned up of artefacts we can align the read to the reference.
 
@@ -354,6 +360,11 @@ samtools view alignment/NA12878/NA12878.sorted.bam | grep "1313:19317:61840"
 
 ```
 
+
+\pagebreak
+
+
+
 **Why did searching one name find both reads ?**
 
 _____________________________________________________________
@@ -384,10 +395,12 @@ _____________________________________________________________
 
 Another useful bit of information in the SAM is the CIGAR string.
 It's the 6th column in the file. This column explains how the alignment was achieved.
-M == base aligns *but doesn't have to be a match*. A SNP will have an M even if it disagrees with the reference.
-I == Insertion
-D == Deletion
-S == soft-clips. These are handy to find un removed adapters, viral insertions, etc.
+
+ * M == base aligns *but doesn't have to be a match*. A SNP will have an M even if it disagrees with the reference.
+ * I == Insertion
+ * D == Deletion
+ * S == soft-clips. These are handy to find un removed adapters, viral insertions, etc.
+
 
 An in depth explanation of the CIGAR can be found [here](http://genome.sph.umich.edu/wiki/SAM)
 The exact details of the cigar string can be found in the SAM spec as well.
@@ -458,7 +471,18 @@ java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
 ## Mark duplicates
 As the step says, this is to mark duplicate reads.
 
-**What are duplicate reads? What are they caused by ?** 
+**What are duplicate reads?**
+
+_____________________________________________________________
+_____________________________________________________________ _____________________________________________________________
+_____________________________________________________________
+
+
+
+
+
+
+**What are they caused by ?** 
 
 _____________________________________________________________
 _____________________________________________________________ _____________________________________________________________
@@ -477,7 +501,7 @@ _____________________________________________________________ __________________
 _____________________________________________________________
 
 
-
+\pagebreak
 
 
 Here we will use picards approach:
@@ -569,8 +593,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   --summaryCoverageThreshold 25 \
   --summaryCoverageThreshold 50 \
   --summaryCoverageThreshold 100 \
-  --start 1 --stop 500 --nBins 499 -dt NONE \
-  -R ${REF}/hg19.fa \
+  --start 1 --stop 500 --nBins 499 -dt NONE -R ${REF}/hg19.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L  chr1:17700000-18100000
@@ -652,23 +675,15 @@ _____________________________________________________________
 # Summary
 In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:
 
-    We became familiar with FASTQ and SAM/BAM formats. 
-    
-    We checked read QC with BVAtools.
-
-    We trimmed unreliable bases from the read ends using Trimmomatic. 
-
-    We aligned the reads to the reference using BWA. 
-
-    We sorted the alignments by chromosome position using PICARD. 
-
-    We realigned short indels using GATK. 
-    
-    We fixed mate issues using PICARD.
-    
-    We recalibratie the Base Quality using GATK.
-    
-    We generate alignment metrics using GATK and PICARD.
+  * We became familiar with FASTQ and SAM/BAM formats. 
+  * We checked read QC with BVAtools.
+  * We trimmed unreliable bases from the read ends using Trimmomatic. 
+  * We aligned the reads to the reference using BWA. 
+  * We sorted the alignments by chromosome position using PICARD. 
+  * We realigned short indels using GATK. 
+  * We fixed mate issues using PICARD.
+  * We recalibratie the Base Quality using GATK.
+  * We generate alignment metrics using GATK and PICARD.
     
 
 
