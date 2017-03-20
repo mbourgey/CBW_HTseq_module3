@@ -30,9 +30,9 @@ We will be working on a 1000 genome sample, NA12878. You can find the whole raw 
 
 NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 
-|Mother|Father|Child|
-|---|---|---|
-|NA12892|NA12891|NA12878|
+| Mother | Father | Child |
+| --- | --- | --- |
+| NA12892 | NA12891 | NA12878 |
 
 
 If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
@@ -42,9 +42,9 @@ If you finish early, feel free to perform the same steps on the other two indivi
 For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
 We're going to focus on the reads extracted from a 300 kbp stretch of chromosome 1
 
-|Chromosome|Start|End|
-|---|---|---|
-|chr1|17704860|18004860|
+| Chromosome | Start | End |
+| --- | --- | --- |
+| chr1 | 17704860 | 18004860 |
 
 
 
@@ -52,7 +52,7 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 
 ### Amazon node
 
-Read these [directions] (http://bioinformatics-ca.github.io/logging_into_the_Amazon_cloud/) for information on how to log in to your assigned Amazon node. 
+Read these [directions] (http://bioinformaticsdotca.github.io/AWS_setup) for information on how to log in to your assigned Amazon node. 
 
 ### Software requirements
 
@@ -183,12 +183,12 @@ All the generated graphics have their uses. This being said 2 of them are partic
 
 These are the Quality box plots 
 
-![Quality box plots](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/QualityBoxPlot.png?raw=true)
+<img src="https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/QualityBoxPlot.png?raw=true" alt="Quality box plots" width="750" />
 
 
 and the nucleotide content graphs.
 
-![Nucleotide content](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/nucleotide_content.png?raw=true)
+<img src="https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/nucleotide_content.png?raw=true" alt="Nucleotide content" width="750" />
 
 
 The Box plot shows the quality distribution of your data. The Graph goes > 100 because both ends are appended one after the other.
@@ -196,11 +196,11 @@ The Box plot shows the quality distribution of your data. The Graph goes > 100 b
 
 The quality of a base is computated using the Phread quality score.
 
-![Phred quality score formula](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/phred_formula.png?raw=true)
+<img src="https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/phred_formula.png?raw=true" alt="Phred quality score formula" width="750" />
 
 The formula outputs an integer that is encoded using an [ASCII](http://en.wikipedia.org/wiki/ASCII) table. 
 
-![ASCII table](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/ascii_table.png?raw=true)
+<img src="https://github.com/mbourgey/CBW_HTseq_module3/blob/master/img/ascii_table.png?raw=true" alt="ASCII table" width="750" />
 
 
 The way the lookup is done is by taking the the phred score adding 33 and using this number as a lookup in the table. The Wikipedia entry for the [FASTQ format](http://en.wikipedia.org/wiki/FASTQ_format) has a summary of the varying values.
