@@ -1,11 +1,11 @@
 ---
 layout: tutorial_page
-permalink: /high-throughput_biology_2017_module3_lab
-title: HT-Biology Lab 3
+permalink: /htseq_2017_module3_lab
+title: HTSeq Lab 3
 header1: Workshop Pages for Students
-header2: High-Throughput Biology - From Sequence to Networks Module 3 Lab
-image: /site_images/CBW-CSHL-graphic-square.png
-home: https://bioinformaticsdotca.github.io/high-throughput_biology_2017
+header2: Informatics on High-Throughput Sequencing Data Module 3 Lab
+image: /site_images/CBW_High-throughput_icon.jpg
+home: https://bioinformaticsdotca.github.io/htseq_2017
 ---
 
 -----------------------
@@ -52,7 +52,7 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 
 ### Amazon node
 
-Read these [directions] (http://bioinformaticsdotca.github.io/AWS_setup) for information on how to log in to your assigned Amazon node. 
+Read these [directions](http://bioinformaticsdotca.github.io/AWS_setup) for information on how to log in to your assigned Amazon node. 
 
 ### Software requirements
 
