@@ -1,11 +1,11 @@
 ---
 layout: tutorial_page
-permalink: /htseq_2017_module3_lab
+permalink: /htseq_2018_module3_lab
 title: HTSeq Lab 3
 header1: Workshop Pages for Students
 header2: Informatics on High-Throughput Sequencing Data Module 3 Lab
 image: /site_images/CBW_High-throughput_icon.jpg
-home: https://bioinformaticsdotca.github.io/htseq_2017
+home: https://bioinformaticsdotca.github.io/htseq_2018
 ---
 
 -----------------------
@@ -62,20 +62,18 @@ These are all already installed, but here are the original links.
   * [SAMTools](http://sourceforge.net/projects/samtools/)
   * [BWA](http://bio-bwa.sourceforge.net/)
   * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
-  * [Picard](http://broadinstitute.github.io/picard/)
   * [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)
 
 
 ### Environment setup
 
 ```
-#set up
 export SOFT_DIR=/usr/local/
 export WORK_DIR=~/workspace/HTseq/Module3/
 export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.36/trimmomatic-0.36.jar
-export PICARD_JAR=$SOFT_DIR/picard/picard.jar
-export GATK_JAR=$SOFT_DIR/GATK/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$SOFT_DIR/bvatools/bvatools-1.6-full.jar
+export GATK_JAR=$SOFT_DIR/gatk-4.0.1.2/gatk-package-4.0.1.2-local.jar
+export GATK_OLD_JAR=~/CourseData/HT_data/software/GenomeAnalysisTK-3.8/GenomeAnalysisTK.jar
+export BVATOOLS_JAR=~/CourseData/HT_data/software/bvatools-1.6/bvatools-1.6-full.jar 
 export REF=$WORK_DIR/reference/
 
 
@@ -285,10 +283,11 @@ bwa mem -M -t 2 \
   ${REF}/hg19.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
-  | java -Xmx2G -jar ${PICARD_JAR} SortSam \
-  INPUT=/dev/stdin \
-  OUTPUT=alignment/NA12878/NA12878.sorted.bam \
-  CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000
+  | java -Xmx2G -jar ${GATK_JAR} SortSam \
+  -I /dev/stdin \
+  -O alignment/NA12878/NA12878.sorted.bam \
+  -SO coordinate \
+  --CREATE_INDEX true --MAX_RECORDS_IN_RAM 500000
 ```
 
 **Why is it important to set Read Group information?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_aln2.md)
@@ -379,42 +378,25 @@ It basically runs in 2 steps
 2- Realign them.
 
 ```
-java -Xmx2G  -jar ${GATK_JAR} \
+java -Xmx2G  -jar ${GATK_OLD_JAR} \
   -T RealignerTargetCreator \
   -R ${REF}/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L chr1
 
-java -Xmx2G -jar ${GATK_JAR} \
+java -Xmx2G -jar ${GATK_OLD_JAR} \
   -T IndelRealigner \
   -R ${REF}/hg19.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
-
 ```
 
 **How could we make this go faster?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign1.md)
 
 **How many regions did it think needed cleaning?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign2.md)
 
-### FixMates (optional)
-
-This step shouldn't be necessary...But it is some time.
-
-This goes through the BAM file and find entries which don't have their mate information written properly.
-
-This used to be a problem in the GATKs realigner, but they fixed it. It shouldn't be a problem with aligners like BWA, but there are always corner cases that create one-off corrdinates and such.
-
-This happened a lot with bwa backtrack. This happens less with bwa mem and recent GATK so we will skip today.
-
-```
-#java -Xmx2G -jar ${PICARD_JAR} FixMateInformation \
-#VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000 \
-#INPUT=alignment/NA12878/NA12878.realigned.sorted.bam \
-#OUTPUT=alignment/NA12878/NA12878.matefixed.sorted.bam
-```
 
 ### Mark duplicates
 
@@ -430,11 +412,11 @@ As the step says, this is to mark duplicate reads.
 Here we will use picards approach:
 
 ```
-java -Xmx2G -jar ${PICARD_JAR} MarkDuplicates \
-  REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true \
-  INPUT=alignment/NA12878/NA12878.realigned.sorted.bam \
-  OUTPUT=alignment/NA12878/NA12878.sorted.dup.bam \
-  METRICS_FILE=alignment/NA12878/NA12878.sorted.dup.metrics
+java -Xmx2G -jar ${GATK_JAR} MarkDuplicates \
+  --REMOVE_DUPLICATES false --CREATE_INDEX true \
+  -I alignment/NA12878/NA12878.realigned.sorted.bam \
+  -O alignment/NA12878/NA12878.sorted.dup.bam \
+  --METRICS_FILE=alignment/NA12878/NA12878.sorted.dup.metrics
 ```
 
 We can look in the metrics output to see what happened.
@@ -463,21 +445,17 @@ It runs in 2 steps,
 2- Correct the reads based on these metrics
 
 ```
-java -Xmx2G -jar ${GATK_JAR} \
-  -T BaseRecalibrator \
-  -nct 2 \
+java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -R ${REF}/hg19.fa \
-  -knownSites ${REF}/dbSNP_135_chr1.vcf.gz \
-  -L chr1:17700000-18100000 \
-  -o alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
+  --known-sites ${REF}/dbSNP_135_chr1.vcf.gz \
+  -L chr1:17704860-18004860 \
+  -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 
-java -Xmx2G -jar ${GATK_JAR} \
-  -T PrintReads \
-  -nct 2 \
+java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -R ${REF}/hg19.fa \
-  -BQSR alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
-  -o alignment/NA12878/NA12878.sorted.dup.recal.bam \
+  -bqsr alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
+  -O alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 ```
 
@@ -498,7 +476,7 @@ Both GATK and BVATools have depth of coverage tools. We wrote our own in BVAtool
 Here we'll use the GATK one
 
 ```
-java  -Xmx2G -jar ${GATK_JAR} \
+java  -Xmx2G -jar ${GATK_OLD_JAR} \
   -T DepthOfCoverage \
   --omitDepthOutputAtEachBase \
   --summaryCoverageThreshold 10 \
@@ -509,7 +487,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   -R ${REF}/hg19.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  -L  chr1:17700000-18100000
+  -L chr1:17700000-18100000
 
 #### Look at the coverage
 less -S alignment/NA12878/NA12878.sorted.dup.recal.coverage.sample_interval_summary
@@ -523,13 +501,12 @@ Another way is to compare the mean to the median. If both are almost equal, your
 ### Insert Size
 
 ```
-java -Xmx2G -jar ${PICARD_JAR} CollectInsertSizeMetrics \
-  VALIDATION_STRINGENCY=SILENT \
-  REFERENCE_SEQUENCE=${REF}/hg19.fa \
-  INPUT=alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  OUTPUT=alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv \
-  HISTOGRAM_FILE=alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.histo.pdf \
-  METRIC_ACCUMULATION_LEVEL=LIBRARY
+java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
+  -R ${REF}/hg19.fa \
+  -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
+  -O alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv \
+  -H alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.histo.pdf \
+  --METRIC_ACCUMULATION_LEVEL LIBRARY
 
 #look at the output
 less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
@@ -544,15 +521,14 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 For the alignment metrics, we used to use ```samtools flagstat``` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
 You can try it if you want.
 
-We prefer the Picard way of computing metrics
+We prefer the GATK way of computing metrics
 
 ```
-java -Xmx2G -jar ${PICARD_JAR} CollectAlignmentSummaryMetrics \
-  VALIDATION_STRINGENCY=SILENT \
-  REFERENCE_SEQUENCE=${REF}/hg19.fa \
-  INPUT=alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  OUTPUT=alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv \
-  METRIC_ACCUMULATION_LEVEL=LIBRARY
+java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
+  -R ${REF}/hg19.fa \
+  -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
+  -O alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv \
+  --METRIC_ACCUMULATION_LEVEL LIBRARY
 
 #### explore the results
 
@@ -577,6 +553,4 @@ In this lab, we aligned reads from the sample NA12878 to the reference genome `h
 - We generate alignment metrics using GATK and PICARD.  
 
 
-## Acknowledgments
 
-I would like to thank and acknowledge Louis Letourneau for this help and for sharing his material. The format of the tutorial has been inspired from Mar Gonzalez Porta of Embl-EBI.
