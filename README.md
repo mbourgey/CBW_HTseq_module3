@@ -37,8 +37,6 @@ NA12878 is the child of the trio while NA12891 and NA12892 are her parents.
 
 If you finish early, feel free to perform the same steps on the other two individuals: NA12891 & NA12892. 
 
-[The analysis of NA12891 & NA12892 will be done during the Integrated Assignment session](https://github.com/bioinformaticsdotca/HT-Biology_2017/blob/master/HtSeq/Integrated_assignment.md)
-
 For practical reasons we subsampled the reads from the sample because running the whole dataset would take way too much time and resources.
 We're going to focus on the reads extracted from a 300 kbp stretch of chromosome 1
 
@@ -61,7 +59,7 @@ These are all already installed, but here are the original links.
   * [BVATools](http://bitbucket.org/mugqic/bvatools/downloads/)
   * [SAMTools](http://sourceforge.net/projects/samtools/)
   * [BWA](http://bio-bwa.sourceforge.net/)
-  * [Genome Analysis Toolkit](http://www.broadinstitute.org/gatk/)
+  * [Genome Analysis ToolKit](http://www.broadinstitute.org/gatk/)
   * [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)
 
 
@@ -176,7 +174,7 @@ open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, 
 [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_fastqQC1.md)
 
 
-All the generated graphics have their uses. This being said 2 of them are particularly useful to get an overal picture of how good or bad a run went. 
+All the generated graphics have their uses. This being said, 2 of them are particularly useful to get an overal picture of how good or bad a run went. 
 
 
 These are the Quality box plots 
@@ -217,9 +215,9 @@ After this careful analysis of the raw data we see that
 Although nowadays this doesn't happen often, it does still happen. In some cases, miRNA, it is expected to have adapters. Since they are not part of the genome of interest they should be removed if enough reads have them.
 
 
-To be able to remove adapters and low qualtity beses we will use Trimmomatic. 
+To be able to remove adapters and low qualtity bases, we will use Trimmomatic. 
 
-The adapter file is already in your reference  folder.
+The adapter file is already in your reference folder.
 
 We can look at the adapters
 
