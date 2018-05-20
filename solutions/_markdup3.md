@@ -1,4 +1,4 @@
-Picard and samtools uses the alignment positions:
+GATK and samtools uses the alignment positions:
  
    - Both 5' ends of both reads need to have the same positions. 
    - Each reads have to be on the same strand as well.

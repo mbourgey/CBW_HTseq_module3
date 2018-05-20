@@ -166,7 +166,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName ACTL8 --output originalQC/
 ```
 
-open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/workspace/` on your node. open ```originalQC``` folder and open the images.
+open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/workspace/` on your node. open `originalQC` folder and open the images.
 
 
 **What stands out in the graphs?**
@@ -407,7 +407,7 @@ As the step says, this is to mark duplicate reads.
 
 **What are the ways to detect them ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup3.md)
 
-Here we will use picards approach:
+Here we will use the GATK approach:
 
 ```
 java -Xmx2G -jar ${GATK_JAR} MarkDuplicates \
@@ -426,9 +426,9 @@ less alignment/NA12878/NA12878.sorted.dup.metrics
 
 This is very low, we expect in general <2%.
 
-We can see that it computed seperate measures for each library.
+Note it computed the metrics for each library.
 
-**Why is this important to do and not combine everything ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup5.md)
+**Why is this important to do it by library and not to combine everything ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_markdup5.md)
 
 
 ### Recalibration
@@ -467,7 +467,7 @@ Once your whole bam is generated, it's always a good thing to check the data aga
 If you have data from a capture kit, you should see how well your targets worked
 
 Both GATK and BVATools have depth of coverage tools. We wrote our own in BVAtools because
-- GATK was deprecating theirs, but they changed their mind
+- GATK was deprecating theirs
 - GATK's is very slow
 - We were missing some output that we wanted from the GATK's one (GC per interval, valid pairs, etc)
 
