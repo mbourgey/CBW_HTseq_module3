@@ -166,7 +166,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName ACTL8 --output originalQC/
 ```
 
-open a web browser on your laptop, and navigate to `http://cbwXX.dyndns.info/`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/workspace/` on your node. open `originalQC` folder and open the images.
+open a web browser on your laptop, and navigate to `http://XX.oicrcbw.ca`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/HTseq/Module3/` on your node. open `originalQC` folder and open the images.
 
 
 **What stands out in the graphs?**
