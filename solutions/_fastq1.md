@@ -1,4 +1,4 @@
-The 4 lines of each read contain:
+There is  4 lines for each read:
  
     - Header 1
     - DNA sequence

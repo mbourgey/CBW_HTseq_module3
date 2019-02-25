@@ -2,11 +2,10 @@
 export SOFT_DIR=/usr/local/
 export WORK_DIR=~/workspace/HTseq/Module3/
 export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.36/trimmomatic-0.36.jar
-export PICARD_JAR=$SOFT_DIR/picard/picard.jar
-export GATK_JAR=$SOFT_DIR/GATK/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=$SOFT_DIR/bvatools/bvatools-1.6-full.jar
+export GATK_JAR=$SOFT_DIR/gatk-4.0.1.2/gatk-package-4.0.1.2-local.jar
+export GATK_OLD_JAR=~/CourseData/HT_data/software/GenomeAnalysisTK-3.8/GenomeAnalysisTK.jar
+export BVATOOLS_JAR=~/CourseData/HT_data/software/bvatools-1.6/bvatools-1.6-full.jar 
 export REF=$WORK_DIR/reference/
-
 
 
 mkdir -p $WORK_DIR
