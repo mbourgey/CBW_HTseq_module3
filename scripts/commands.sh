@@ -1,19 +1,16 @@
 #set up
 export SOFT_DIR=/usr/local/
 export WORK_DIR=~/workspace/HTseq/Module3/
-export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.36/trimmomatic-0.36.jar
-export GATK_JAR=$SOFT_DIR/gatk-4.0.1.2/gatk-package-4.0.1.2-local.jar
-export GATK_OLD_JAR=~/CourseData/HT_data/software/GenomeAnalysisTK-3.8/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=~/CourseData/HT_data/software/bvatools-1.6/bvatools-1.6-full.jar 
 export REF=$WORK_DIR/reference/
 
 
 rm -rf $WORK_DIR
 mkdir -p $WORK_DIR
 cd $WORK_DIR
-ln -s ~/CourseData/HT_data/Module3/* .
+ln -s ~/CourseData/CG_data/HT_data/Module3/* .
 
-
+singularity run -B ~/cvmfs_cache:/cvmfs-cache/ docker://c3genomics/genpipes:0.4
+module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0
 
 # fastq files
 
@@ -80,19 +77,28 @@ samtools view -c -f4 alignment/NA12878/NA12878.sorted.bam
 samtools view -c -F4 alignment/NA12878/NA12878.sorted.bam
 
 # Indel realignment
-java -Xmx2G  -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
   -R ${REF}/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L chr1
 
-java -Xmx2G -jar ${GATK_OLD_JAR} \
+java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
   -R ${REF}/hg19.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
+
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
 
 # FixMates
 #java -Xmx2G -jar ${GATK_JAR} FixMateInformation \
@@ -127,7 +133,12 @@ java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 
 # Extract Metrics
-java  -Xmx2G -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java  -Xmx2G -jar ${GATK_JAR} \
   -T DepthOfCoverage \
   --omitDepthOutputAtEachBase \
   --summaryCoverageThreshold 10 \
@@ -139,6 +150,11 @@ java  -Xmx2G -jar ${GATK_OLD_JAR} \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L chr1:17700000-18100000
+
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
+  
   
 ## less -S alignment/NA12878/NA12878.sorted.dup.recal.coverage.sample_interval_summary
 
