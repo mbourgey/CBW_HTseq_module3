@@ -1,6 +1,6 @@
 ---
 layout: tutorial_page
-permalink: /htseq_2018_module3_lab
+permalink: /htseq_2019_module3_lab
 title: HTSeq Lab 3
 header1: Workshop Pages for Students
 header2: Informatics on High-Throughput Sequencing Data Module 3 Lab
