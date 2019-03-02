@@ -1,5 +1,4 @@
 #set up
-export SOFT_DIR=/usr/local/
 export WORK_DIR=~/workspace/HTseq/Module3/
 export REF=$WORK_DIR/reference/
 
@@ -9,8 +8,8 @@ mkdir -p $WORK_DIR
 cd $WORK_DIR
 ln -s ~/CourseData/CG_data/HT_data/Module3/* .
 
-singularity run -B ~/cvmfs_cache:/cvmfs-cache/ docker://c3genomics/genpipes:0.4
-module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0
+singularity run -B ~/cvmfs_cache:/cvmfs-cache/ docker://c3genomics/genpipes:0.7  -V 3.1.2
+module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0 mugqic/R_Bioconductor/3.5.0_3.7
 
 # fastq files
 
@@ -124,7 +123,6 @@ java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 
-##emit 1 waring for the dictionnary
 
 java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -R ${REF}/hg19.fa \
@@ -174,3 +172,5 @@ java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
 
 ## less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
+
+exit

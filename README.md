@@ -66,12 +66,8 @@ These are all already installed, but here are the original links.
 ### Environment setup
 
 ```
-export SOFT_DIR=/usr/local/
+#set up
 export WORK_DIR=~/workspace/HTseq/Module3/
-export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.38/trimmomatic-0.38.jar
-export GATK_JAR=$SOFT_DIR/GATK/gatk-package-4.1.0.0-local.jar
-export GATK_OLD_JAR=~/CourseData/HT_data/software/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=~/CourseData/HT_data/software/bvatools-1.6/bvatools-1.6-full.jar 
 export REF=$WORK_DIR/reference/
 
 
@@ -79,6 +75,9 @@ rm -rf $WORK_DIR
 mkdir -p $WORK_DIR
 cd $WORK_DIR
 ln -s ~/CourseData/CG_data/HT_data/Module3/* .
+
+singularity run -B ~/cvmfs_cache:/cvmfs-cache/ docker://c3genomics/genpipes:0.7  -V 3.1.2
+module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0 mugqic/R_Bioconductor/3.5.0_3.7
 ```
 
 ### Data files
@@ -376,19 +375,27 @@ It basically runs in 2 steps
 2- Realign them.
 
 ```
-java -Xmx2G  -jar ${GATK_OLD_JAR} \
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
   -R ${REF}/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L chr1
 
-java -Xmx2G -jar ${GATK_OLD_JAR} \
+java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
   -R ${REF}/hg19.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
+
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
 ```
 
 **How could we make this go faster?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign1.md)
@@ -474,7 +481,12 @@ Both GATK and BVATools have depth of coverage tools. We wrote our own in BVAtool
 Here we'll use the GATK one
 
 ```
-java  -Xmx2G -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java  -Xmx2G -jar ${GATK_JAR} \
   -T DepthOfCoverage \
   --omitDepthOutputAtEachBase \
   --summaryCoverageThreshold 10 \
@@ -486,6 +498,10 @@ java  -Xmx2G -jar ${GATK_OLD_JAR} \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L chr1:17700000-18100000
+
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
 
 #### Look at the coverage
 less -S alignment/NA12878/NA12878.sorted.dup.recal.coverage.sample_interval_summary
@@ -516,7 +532,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv
 
 ### Alignment metrics
 
-For the alignment metrics, we used to use ```samtools flagstat``` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
+For the alignment metrics, we used to use `samtools flagstat` but with bwa mem since some reads get broken into pieces, the numbers are a bit confusing.
 You can try it if you want.
 
 We prefer the GATK way of computing metrics
@@ -535,6 +551,13 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 ```
 
 **What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_alnMetrics1.md)
+
+
+### quit the singularity container
+
+```
+exit
+```
 
 ## Summary
 
