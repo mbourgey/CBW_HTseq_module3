@@ -553,7 +553,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 **What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_alnMetrics1.md)
 
 
-### quit the singularity container
+### quit the singularity container Environment
 
 ```
 exit
