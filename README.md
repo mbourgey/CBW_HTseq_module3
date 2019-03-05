@@ -567,11 +567,11 @@ In this lab, we aligned reads from the sample NA12878 to the reference genome `h
 - We checked read QC with BVAtools.
 - We trimmed unreliable bases from the read ends using Trimmomatic. 
 - We aligned the reads to the reference using BWA. 
-- We sorted the alignments by chromosome position using PICARD. 
+- We sorted the alignments by chromosome position using GATK. 
 - We realigned short indels using GATK. 
-- We fixed mate issues using PICARD.
+- We fixed mate issues using GATK.
 - We recalibrate the Base Quality using GATK.
-- We generate alignment metrics using GATK and PICARD.  
+- We generate alignment metrics using GATK.  
 
 
 
