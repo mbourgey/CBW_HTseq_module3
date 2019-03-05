@@ -1,20 +1,32 @@
 #set up
-export SOFT_DIR=/usr/local/
 export WORK_DIR=~/workspace/HTseq/Module3/
-export TRIMMOMATIC_JAR=$SOFT_DIR/Trimmomatic-0.36/trimmomatic-0.36.jar
-export GATK_JAR=$SOFT_DIR/gatk-4.0.1.2/gatk-package-4.0.1.2-local.jar
-export GATK_OLD_JAR=~/CourseData/HT_data/software/GenomeAnalysisTK-3.8/GenomeAnalysisTK.jar
-export BVATOOLS_JAR=~/CourseData/HT_data/software/bvatools-1.6/bvatools-1.6-full.jar 
 export REF=$WORK_DIR/reference/
 
 
+rm -rf $WORK_DIR
 mkdir -p $WORK_DIR
 cd $WORK_DIR
-ln -s ~/CourseData/HT_data/Module3/* .
+ln -s ~/CourseData/CG_data/HT_data/Module3/* .
+
+singularity run -B ~/cvmfs_cache:/cvmfs-cache/ docker://c3genomics/genpipes:0.7  -V 3.1.2
+module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0 mugqic/R_Bioconductor/3.5.0_3.7
 
 
 
-#NA12891
+###NA12891
+
+
+# fastq files
+
+## zless -S raw_reads/NA12891/NA12891_CBW_chr1_R1.fastq.gz
+
+
+zcat raw_reads/NA12891/NA12891_CBW_chr1_R1.fastq.gz | head -n4
+zcat raw_reads/NA12891/NA12891_CBW_chr1_R2.fastq.gz | head -n4
+
+zgrep -c "^@SN1114" raw_reads/NA12891/NA12891_CBW_chr1_R1.fastq.gz
+
+zgrep -c "^@" raw_reads/NA12891/NA12891_CBW_chr1_R1.fastq.gz
 
 # Quality
 mkdir -p originalQC/
@@ -24,6 +36,8 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName ACTL8 --output originalQC/
 
 #trim
+
+cat $REF/adapters.fa
 
 mkdir -p reads/NA12891/
 
@@ -37,8 +51,10 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
   ILLUMINACLIP:${REF}/adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
   2> reads/NA12891/NA12891.trim.out
 
+cat reads/NA12891/NA12891.trim.out
 
-mkdir -p postTrimQC/
+
+mkdir postTrimQC/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --read1 reads/NA12891/NA12891_CBW_chr1_R1.t20l32.fastq.gz \
   --read2 reads/NA12891/NA12891_CBW_chr1_R2.t20l32.fastq.gz \
@@ -58,21 +74,42 @@ bwa mem -M -t 2 \
   -SO coordinate \
   --CREATE_INDEX true --MAX_RECORDS_IN_RAM 500000
 
+samtools view alignment/NA12891/NA12891.sorted.bam | head -n2
+
+samtools view -c -f4 alignment/NA12891/NA12891.sorted.bam
+
+samtools view -c -F4 alignment/NA12891/NA12891.sorted.bam
 
 # Indel realignment
-java -Xmx2G  -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
   -R ${REF}/hg19.fa \
   -o alignment/NA12891/realign.intervals \
   -I alignment/NA12891/NA12891.sorted.bam \
   -L chr1
 
-java -Xmx2G -jar ${GATK_OLD_JAR} \
+java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
   -R ${REF}/hg19.fa \
   -targetIntervals alignment/NA12891/realign.intervals \
   -o alignment/NA12891/NA12891.realigned.sorted.bam \
   -I alignment/NA12891/NA12891.sorted.bam
+
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
+
+# FixMates
+#java -Xmx2G -jar ${GATK_JAR} FixMateInformation \
+#  VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000 \
+#  INPUT=alignment/NA12891/NA12891.realigned.sorted.bam \
+#  OUTPUT=alignment/NA12891/NA12891.matefixed.sorted.bam
+
 
 # Mark duplicates
 java -Xmx2G -jar ${GATK_JAR} MarkDuplicates \
@@ -81,6 +118,7 @@ java -Xmx2G -jar ${GATK_JAR} MarkDuplicates \
   -O alignment/NA12891/NA12891.sorted.dup.bam \
   --METRICS_FILE=alignment/NA12891/NA12891.sorted.dup.metrics
 
+## less alignment/NA12891/NA12891.sorted.dup.metrics
 
 # Recalibration
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
@@ -90,7 +128,6 @@ java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -O alignment/NA12891/NA12891.sorted.dup.recalibration_report.grp \
   -I alignment/NA12891/NA12891.sorted.dup.bam
 
-##emit 1 waring for the dictionnary
 
 java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -R ${REF}/hg19.fa \
@@ -99,7 +136,12 @@ java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -I alignment/NA12891/NA12891.sorted.dup.bam
 
 # Extract Metrics
-java  -Xmx2G -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java  -Xmx2G -jar ${GATK_JAR} \
   -T DepthOfCoverage \
   --omitDepthOutputAtEachBase \
   --summaryCoverageThreshold 10 \
@@ -111,7 +153,13 @@ java  -Xmx2G -jar ${GATK_OLD_JAR} \
   -o alignment/NA12891/NA12891.sorted.dup.recal.coverage \
   -I alignment/NA12891/NA12891.sorted.dup.recal.bam \
   -L chr1:17700000-18100000
+
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
   
+  
+## less -S alignment/NA12891/NA12891.sorted.dup.recal.coverage.sample_interval_summary
 
 java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
   -R ${REF}/hg19.fa \
@@ -120,6 +168,7 @@ java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
   -H alignment/NA12891/NA12891.sorted.dup.recal.metric.insertSize.histo.pdf \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
   
+## less -S alignment/NA12891/NA12891.sorted.dup.recal.metric.insertSize.tsv
 
 java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
   -R ${REF}/hg19.fa \
@@ -127,8 +176,24 @@ java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
   -O alignment/NA12891/NA12891.sorted.dup.recal.metric.alignment.tsv \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
 
+## less -S alignment/NA12891/NA12891.sorted.dup.recal.metric.alignment.tsv
 
-#NA12892
+
+
+
+###NA12892
+
+# fastq files
+
+## zless -S raw_reads/NA12892/NA12892_CBW_chr1_R1.fastq.gz
+
+
+zcat raw_reads/NA12892/NA12892_CBW_chr1_R1.fastq.gz | head -n4
+zcat raw_reads/NA12892/NA12892_CBW_chr1_R2.fastq.gz | head -n4
+
+zgrep -c "^@SN1114" raw_reads/NA12892/NA12892_CBW_chr1_R1.fastq.gz
+
+zgrep -c "^@" raw_reads/NA12892/NA12892_CBW_chr1_R1.fastq.gz
 
 # Quality
 mkdir -p originalQC/
@@ -153,9 +218,10 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
   ILLUMINACLIP:${REF}/adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
   2> reads/NA12892/NA12892.trim.out
 
+cat reads/NA12892/NA12892.trim.out
 
 
-mkdir -p postTrimQC/
+mkdir postTrimQC/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --read1 reads/NA12892/NA12892_CBW_chr1_R1.t20l32.fastq.gz \
   --read2 reads/NA12892/NA12892_CBW_chr1_R2.t20l32.fastq.gz \
@@ -175,23 +241,41 @@ bwa mem -M -t 2 \
   -SO coordinate \
   --CREATE_INDEX true --MAX_RECORDS_IN_RAM 500000
 
+samtools view alignment/NA12892/NA12892.sorted.bam | head -n2
+
+samtools view -c -f4 alignment/NA12892/NA12892.sorted.bam
+
+samtools view -c -F4 alignment/NA12892/NA12892.sorted.bam
 
 # Indel realignment
-java -Xmx2G  -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
   -R ${REF}/hg19.fa \
   -o alignment/NA12892/realign.intervals \
   -I alignment/NA12892/NA12892.sorted.bam \
   -L chr1
 
-java -Xmx2G -jar ${GATK_OLD_JAR} \
+java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
   -R ${REF}/hg19.fa \
   -targetIntervals alignment/NA12892/realign.intervals \
   -o alignment/NA12892/NA12892.realigned.sorted.bam \
   -I alignment/NA12892/NA12892.sorted.bam
 
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
 
+# FixMates
+#java -Xmx2G -jar ${GATK_JAR} FixMateInformation \
+#  VALIDATION_STRINGENCY=SILENT CREATE_INDEX=true SORT_ORDER=coordinate MAX_RECORDS_IN_RAM=500000 \
+#  INPUT=alignment/NA12892/NA12892.realigned.sorted.bam \
+#  OUTPUT=alignment/NA12892/NA12892.matefixed.sorted.bam
 
 
 # Mark duplicates
@@ -201,7 +285,7 @@ java -Xmx2G -jar ${GATK_JAR} MarkDuplicates \
   -O alignment/NA12892/NA12892.sorted.dup.bam \
   --METRICS_FILE=alignment/NA12892/NA12892.sorted.dup.metrics
 
-
+## less alignment/NA12892/NA12892.sorted.dup.metrics
 
 # Recalibration
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
@@ -211,7 +295,6 @@ java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -O alignment/NA12892/NA12892.sorted.dup.recalibration_report.grp \
   -I alignment/NA12892/NA12892.sorted.dup.bam
 
-##emit 1 waring for the dictionnary
 
 java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -R ${REF}/hg19.fa \
@@ -220,7 +303,12 @@ java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
   -I alignment/NA12892/NA12892.sorted.dup.bam
 
 # Extract Metrics
-java  -Xmx2G -jar ${GATK_OLD_JAR} \
+
+#switch to old GATK 3.8
+module unload  mugqic/GenomeAnalysisTK/4.1.0.0
+module load mugqic/GenomeAnalysisTK/3.8
+
+java  -Xmx2G -jar ${GATK_JAR} \
   -T DepthOfCoverage \
   --omitDepthOutputAtEachBase \
   --summaryCoverageThreshold 10 \
@@ -232,8 +320,13 @@ java  -Xmx2G -jar ${GATK_OLD_JAR} \
   -o alignment/NA12892/NA12892.sorted.dup.recal.coverage \
   -I alignment/NA12892/NA12892.sorted.dup.recal.bam \
   -L chr1:17700000-18100000
-  
 
+#return to GATK 4
+module unload mugqic/GenomeAnalysisTK/3.8
+module load  mugqic/GenomeAnalysisTK/4.1.0.0
+  
+  
+## less -S alignment/NA12892/NA12892.sorted.dup.recal.coverage.sample_interval_summary
 
 java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
   -R ${REF}/hg19.fa \
@@ -242,7 +335,7 @@ java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
   -H alignment/NA12892/NA12892.sorted.dup.recal.metric.insertSize.histo.pdf \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
   
-
+## less -S alignment/NA12892/NA12892.sorted.dup.recal.metric.insertSize.tsv
 
 java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
   -R ${REF}/hg19.fa \
@@ -250,5 +343,7 @@ java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
   -O alignment/NA12892/NA12892.sorted.dup.recal.metric.alignment.tsv \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
 
+## less -S alignment/NA12892/NA12892.sorted.dup.recal.metric.alignment.tsv
 
+exit
 
