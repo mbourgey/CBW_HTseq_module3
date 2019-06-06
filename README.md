@@ -468,7 +468,7 @@ java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 
 java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   -bqsr alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -O alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -I alignment/NA12878/NA12878.sorted.dup.bam
