@@ -391,14 +391,14 @@ module load mugqic/GenomeAnalysisTK/3.8
 
 java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L chr1
 
 java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
@@ -461,7 +461,7 @@ It runs in 2 steps,
 
 ```
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   --known-sites ${REF}/dbSNP_135_chr1.vcf.gz \
   -L chr1:17704860-18004860 \
   -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
@@ -504,7 +504,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   --summaryCoverageThreshold 50 \
   --summaryCoverageThreshold 100 \
   --start 1 --stop 500 --nBins 499 -dt NONE \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L chr1:17700000-18100000
@@ -526,7 +526,7 @@ Another way is to compare the mean to the median. If both are almost equal, your
 
 ```
 java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -O alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv \
   -H alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.histo.pdf \
@@ -549,7 +549,7 @@ We prefer the GATK way of computing metrics
 
 ```
 java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
-  -R ${REF}/hg19.fa \
+  -R reference/hg19.fa \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -O alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
