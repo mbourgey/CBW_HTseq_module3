@@ -462,7 +462,7 @@ It runs in 2 steps,
 ```
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -R reference/hg19.fa \
-  --known-sites ${REF}/dbSNP_135_chr1.vcf.gz \
+  --known-sites reference/dbSNP_135_chr1.vcf.gz \
   -L chr1:17704860-18004860 \
   -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -I alignment/NA12878/NA12878.sorted.dup.bam
