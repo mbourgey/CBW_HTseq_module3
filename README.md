@@ -149,7 +149,7 @@ zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_fastq3.md)
 
 
-### Quality
+## Quality
 
 We can't look at all the reads. Especially when working with whole genome 30x data. You could easilly have Billions of reads.
 
