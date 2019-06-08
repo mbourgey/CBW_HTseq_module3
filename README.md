@@ -74,7 +74,7 @@ export REF=$WORK_DIR/reference/
 rm -rf $WORK_DIR
 mkdir -p $WORK_DIR
 cd $WORK_DIR
-ln -s CourseData/CG_data/HT_data/Module3/* .
+ln -s ../../../HT_data_2018/Module4/* .
 
 docker run \
  --privileged \
