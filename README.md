@@ -223,7 +223,7 @@ The adapter file is already in your reference folder.
 We can look at the adapters
 
 ```
-cat $REF/adapters.fa
+cat reference/adapters.fa
 ```
 
 **Why are there 2 different ones ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_trim1.md)
@@ -279,7 +279,7 @@ mkdir -p alignment/NA12878/
 
 bwa mem -M -t 2 \
   -R '@RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPU:runNA12878_1\tCN:Broad Institute\tPL:ILLUMINA' \
-  ${REF}/hg19.fa \
+  refernec/hg19.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   | java -Xmx2G -jar ${GATK_JAR} SortSam \
