@@ -68,7 +68,6 @@ These are all already installed, but here are the original links.
 ```
 #set up
 export WORK_DIR=workspace/HTseq/Module3/
-export REF=$WORK_DIR/reference/
 
 
 rm -rf $WORK_DIR
@@ -76,21 +75,12 @@ mkdir -p $WORK_DIR
 cd $WORK_DIR
 ln -s ../../../HT_data_2018/Module3/* .
 
-docker run \
- --privileged \
- -v /tmp:/tmp \
- --network host \
- -it \
- -w $PWD \
- -v $HOME:$HOME \
- -v /media:/media
- --user $UID:$GROUPS \
- -v /etc/group:/etc/group \
- -v /etc/passwd:/etc/passwd \
- c3genomics/genpipes:0.8
-```
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
 
 module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0 mugqic/R_Bioconductor/3.5.0_3.7
+```
+
+
 
 ### Data files
 
