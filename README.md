@@ -68,6 +68,7 @@ These are all already installed, but here are the original links.
 ```
 #set up
 export WORK_DIR_M3=workspace/HTseq/Module3/
+export REF=home/ubuntu/workspace/HTseq/Module3/reference
 
 
 mkdir -p $WORK_DIR_M3
