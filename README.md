@@ -94,6 +94,7 @@ to verify your environnement set up:
 
 ```
 Module av
+module list
 
 ```
 ### load the modules
