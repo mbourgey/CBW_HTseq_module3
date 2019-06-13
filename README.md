@@ -66,11 +66,11 @@ These are all already installed, but here are the original links.
 ### Environment setup
 
 ```
-#set up
+#variables assignment
 export WORK_DIR_M3=workspace/HTseq/Module3/
 export REF=home/ubuntu/workspace/HTseq/Module3/reference
 
-
+#set up
 mkdir -p $WORK_DIR_M3
 cd $WORK_DIR_M3
 ln -s /home/ubuntu/CourseData/HT_data/Module3/* .
