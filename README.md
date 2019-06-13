@@ -44,7 +44,7 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 | --- | --- | --- |
 | chr1 | 17704860 | 18004860 |
 
-
+ 
 
 ## Original Setup
 
@@ -65,12 +65,16 @@ These are all already installed, but here are the original links.
 
 ### Environment setup
 
+### variables assignment
+
 ```
-#variables assignment
 export WORK_DIR_M3=workspace/HTseq/Module3/
 export REF=home/ubuntu/workspace/HTseq/Module3/reference
 
-#set up
+```
+### set up
+
+```
 mkdir -p $WORK_DIR_M3
 cd $WORK_DIR_M3
 ln -s /home/ubuntu/CourseData/HT_data/Module3/* .
