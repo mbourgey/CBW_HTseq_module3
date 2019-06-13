@@ -84,7 +84,6 @@ A container image is an immutable, read-only file with instructions for creating
 docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
 
 ```
-```
 ### Modules
 
 to verify your environnement:
