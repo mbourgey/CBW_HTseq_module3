@@ -67,13 +67,12 @@ These are all already installed, but here are the original links.
 
 ```
 #set up
-export WORK_DIR=workspace/HTseq/Module3/
+export WORK_DIR_M3=workspace/HTseq/Module3/
 
 
-rm -rf $WORK_DIR
-mkdir -p $WORK_DIR
-cd $WORK_DIR
-ln -s ../../../HT_data_2018/Module3/* .
+mkdir -p $WORK_DIR_M3
+cd $WORK_DIR_M3
+ln -s /home/ubuntu/CourseData/HT_data/Module3/* .
 
 docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
 
