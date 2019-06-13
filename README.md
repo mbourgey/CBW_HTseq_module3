@@ -74,7 +74,6 @@ mkdir -p $WORK_DIR_M3
 cd $WORK_DIR_M3
 ln -s /home/ubuntu/CourseData/HT_data/Module3/* .
 
-module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0 mugqic/R_Bioconductor/3.5.0_3.7
 ```
 ### Docker
 
