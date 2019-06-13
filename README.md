@@ -85,7 +85,7 @@ docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -
 ```
 ### Modules
 
-to verify your environnement:
+to verify your environnement set up:
 
 ```
 Module av
