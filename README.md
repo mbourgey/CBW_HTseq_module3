@@ -17,7 +17,7 @@ home: https://bioinformaticsdotca.github.io/htseq_2019
 # CBW HT-seq Module 3 - Genome Alignment   
 
  
-by Mathieu Bourgey, _Ph.D_
+Created by Mathieu Bourgey, _Ph.D_, then modified by Pascale Marquis
 
 
 
