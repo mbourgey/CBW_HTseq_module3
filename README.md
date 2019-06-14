@@ -68,8 +68,8 @@ These are all already installed, but here are the original links.
 #### variables assignment
 
 ```
-export WORK_DIR_M3=workspace/HTseq/Module3/
-export REF=/home/ubuntu/workspace/HTseq/Module3/reference
+export WORK_DIR_M3=$HOME/workspace/HTseq/Module3/
+export REF=$HOME/workspace/HTseq/Module3/reference
 
 ```
 #### set up
