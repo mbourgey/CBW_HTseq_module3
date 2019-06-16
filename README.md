@@ -95,7 +95,7 @@ ln -s $HOME/CourseData/HT_data/Module3/* .
 to verify your environnement set up:
 
 ```
-Module av
+module av
 module list
 
 ```
