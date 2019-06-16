@@ -534,7 +534,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.coverage.sample_interval_summ
 Coverage is the expected ~30x. 
 
 summaryCoverageThreshold is a usefull function to see if your coverage is uniform.
-Another way is to compare the mean to the median. If both are almost equal, your coverage is pretty flat. If both are quite different, that means something is wrong in your coverage. A mix of WGS and WES would show very different mean and median values.
+Another way is to compare the mean to the median. If both are almost equal, your coverage is pretty flat. If both are quite different, that means something is wrong in your coverage.
 
 ### Insert Size
 
