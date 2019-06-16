@@ -65,6 +65,16 @@ These are all already installed, but here are the original links.
 
 ### Environment setup
 
+
+### Docker
+
+A container image is an immutable, read-only file with instructions for creating a Docker container. Every time you start a container based on a container image file, you will get the exact same Docker container - no matter where you deploy it.  
+
+```
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
+
+```
+
 #### variables assignment
 
 ```
@@ -78,14 +88,6 @@ export REF=$HOME/workspace/HTseq/Module3/reference
 mkdir -p $WORK_DIR_M3
 cd $WORK_DIR_M3
 ln -s $HOME/CourseData/HT_data/Module3/* .
-
-```
-### Docker
-
-A container image is an immutable, read-only file with instructions for creating a Docker container. Every time you start a container based on a container image file, you will get the exact same Docker container - no matter where you deploy it.  
-
-```
-docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
 
 ```
 ### Modules
