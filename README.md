@@ -303,7 +303,7 @@ mkdir -p alignment/NA12878/
 
 bwa mem -M -t 2 \
   -R '@RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPU:runNA12878_1\tCN:Broad Institute\tPL:ILLUMINA' \
-  refernec/hg19.fa \
+  $REF/hg19.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   | java -Xmx2G -jar ${GATK_JAR} SortSam \
@@ -407,14 +407,14 @@ module load mugqic/GenomeAnalysisTK/3.8
 
 java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
-  -R reference/hg19.fa \
+  -R $REF/hg19.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L chr1
 
 java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
-  -R reference/hg19.fa \
+  -R $REF/hg19.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
