@@ -1,17 +1,17 @@
+
+# docker
+
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
+
+
 #set up
-export WORK_DIR=~/workspace/HTseq/Module3/
-export REF=$WORK_DIR/reference/
 
+export WORK_DIR_M3=$HOME/workspace/HTseq/Module3/
+export REF=$HOME/workspace/HTseq/Module3/reference
 
-rm -rf $WORK_DIR
-mkdir -p $WORK_DIR
-cd $WORK_DIR
-ln -s ~/CourseData/CG_data/HT_data/Module3/* .
-
-singularity run -B ~/cvmfs_cache:/cvmfs-cache/ docker://c3genomics/genpipes:0.7  -V 3.1.2
-module load mugqic/java/openjdk-jdk1.8.0_72 mugqic/bvatools/1.6 mugqic/trimmomatic/0.36 mugqic/samtools/1.9 mugqic/bwa/0.7.17 mugqic/GenomeAnalysisTK/4.1.0.0 mugqic/R_Bioconductor/3.5.0_3.7
-
-
+mkdir -p $WORK_DIR_M3
+cd $WORK_DIR_M3
+ln -s $HOME/CourseData/HT_data/Module3/* .
 
 ###NA12891
 
