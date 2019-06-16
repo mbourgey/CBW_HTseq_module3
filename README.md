@@ -424,8 +424,6 @@ module unload mugqic/GenomeAnalysisTK/3.8
 module load  mugqic/GenomeAnalysisTK/4.1.0.0
 ```
 
-**How could we make this go faster?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign1.md)
-
 **How many regions did it think needed cleaning?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_realign2.md)
 
 
