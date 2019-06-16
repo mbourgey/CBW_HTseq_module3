@@ -324,7 +324,7 @@ For most cases, only the sample name, platform unit and library one are importan
 
 ### Lane merging (optional)
 
-In case ywe generate multiple lane of sequencing or mutliple library. It is not practical to keep the data splited and all the reads should be merge into one massive file. 
+In case we generate multiple lane of sequencing or mutliple library. It is not practical to keep the data splited and all the reads should be merge into one massive file. 
 
 Since we identified the reads in the BAM with read groups, even after the merging, we can still identify the origin of each read.
 
