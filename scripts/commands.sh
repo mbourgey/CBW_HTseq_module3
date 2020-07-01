@@ -1,5 +1,7 @@
 #set up
-docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
+salloc --mem 0 -n 8
+ 
+ 
 export WORK_DIR_M3=$HOME/workspace/HTseq/Module3/
 export REF=$HOME/workspace/HTseq/Module3/reference
 mkdir -p $WORK_DIR_M3

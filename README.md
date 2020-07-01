@@ -66,12 +66,12 @@ These are all already installed, but here are the original links.
 ### Environment setup
 
 
-### Docker
+### accessing a working node
 
-A container image is an immutable, read-only file with instructions for creating a Docker container. Every time you start a container based on a container image file, you will get the exact same Docker container - no matter where you deploy it.  
+when you logged into the server you are in a logging node which is not made to run intensive tasks.  In order to run your analysis in a stable environment without affecting other user you need to access a working node. Usually each job shoule be launched through the scheduler to run in a working environment. For the workshop as our job are small and fast, we can directly connect interactively to a working node and launch them one after the other.  
 
 ```
-docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
+salloc --mem 0 -n 8
 
 ```
 

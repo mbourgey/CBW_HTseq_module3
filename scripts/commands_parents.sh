@@ -1,7 +1,6 @@
 
-# docker
-
-docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME -v /media:/media --user $UID:$GROUPS -v /etc/group:/etc/group -v /etc/passwd:/etc/passwd c3genomics/genpipes:0.8
+# access working node
+salloc --mem 0 -n 8
 
 
 #set up
