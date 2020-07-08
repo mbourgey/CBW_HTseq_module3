@@ -1,11 +1,11 @@
 ---
 layout: tutorial_page
-permalink: /htseq_2019_module3_lab
+permalink: /htseq_2020_module3_lab
 title: HTSeq Lab 3
 header1: Workshop Pages for Students
 header2: Informatics on High-Throughput Sequencing Data Module 3 Lab
 image: /site_images/CBW_High-throughput_icon.jpg
-home: https://bioinformaticsdotca.github.io/htseq_2019
+home: https://bioinformaticsdotca.github.io/htseq_2020
 ---
 
 -----------------------
@@ -17,7 +17,7 @@ home: https://bioinformaticsdotca.github.io/htseq_2019
 # CBW HT-seq Module 3 - Genome Alignment   
 
  
-Created by Mathieu Bourgey, _Ph.D_, then modified by Pascale Marquis
+Created by Mathieu Bourgey, _Ph.D_
 
 
 
