@@ -48,9 +48,6 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 
 ## Original Setup
 
-### Amazon node
-
-Read these [directions](http://bioinformaticsdotca.github.io/AWS_setup) for information on how to log in to your assigned Amazon node. 
 
 ### Software requirements
 
@@ -191,7 +188,10 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --threads 2 --regionName ACTL8 --output originalQC/
 ```
 
-open a web browser on your laptop, and navigate to `http://XX.oicrcbw.ca`, where `XX` is the id of your node. You should be able to find there the directory hierarchy under `~/HTseq/Module3/` on your node. open `originalQC` folder and open the images.
+open another terminer and launch the following command to copy your data into your local computer  `scp -r userXX@CBW.calculquebec.cloud:workspace/HTseq/Module3/originalQC . `, where `XX` is the id of your account. You may enter your password. Once the copy is done, open `originalQC` folder and open the images.
+Another possibility is to look at the precomputed results here ` https://datahub-39-cm2.p.genap.ca/HTseq/Module`
+
+
 
 
 **What stands out in the graphs?**
@@ -577,7 +577,7 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 **What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_alnMetrics1.md)
 
 
-### quit docker Environment
+### quit working node Environment
 
 ```
 exit
