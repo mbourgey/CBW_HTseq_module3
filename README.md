@@ -189,7 +189,7 @@ java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
 ```
 
 open another terminer and launch the following command to copy your data into your local computer  `scp -r userXX@CBW.calculquebec.cloud:workspace/HTseq/Module3/originalQC . `, where `XX` is the id of your account. You may enter your password. Once the copy is done, open `originalQC` folder and open the images.
-Another possibility is to look at the precomputed results here ` https://datahub-39-cm2.p.genap.ca/HTseq/Module`
+Another possibility is to look at the precomputed results here ` https://datahub-39-cm2.p.genap.ca/HTseq/Module3`
 
 
 
