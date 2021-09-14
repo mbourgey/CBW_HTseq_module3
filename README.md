@@ -42,7 +42,7 @@ We're going to focus on the reads extracted from a 300 kbp stretch of chromosome
 
 | Chromosome | Start | End |
 | --- | --- | --- |
-| chr1 | 17704860 | 18004860 |
+| 1 | 17704860 | 18004860 |
 
  
 
@@ -590,7 +590,7 @@ exit
 
 ## Summary
 
-In this lab, we aligned reads from the sample NA12878 to the reference genome `hg19`:
+In this lab, we aligned reads from the sample NA12878 to the reference genome `GRCh37`:
 
 - We became familiar with FASTQ and SAM/BAM formats. 
 - We checked read QC with BVAtools.
