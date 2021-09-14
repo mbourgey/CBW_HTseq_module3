@@ -1,11 +1,11 @@
 ---
 layout: tutorial_page
-permalink: /htseq_2020_module3_lab
-title: HTSeq Lab 3
+permalink: /htg_2021_module3_lab
+title: HTG Lab 3
 header1: Workshop Pages for Students
-header2: Informatics on High-Throughput Sequencing Data Module 3 Lab
+header2: Informatics on High-Throughput Genomic Module 3 Lab
 image: /site_images/CBW_High-throughput_icon.jpg
-home: https://bioinformaticsdotca.github.io/htseq_2020
+home: https://bioinformaticsdotca.github.io/htg_2021
 ---
 
 -----------------------
@@ -14,7 +14,7 @@ home: https://bioinformaticsdotca.github.io/htseq_2020
 
 -----------------------
 
-# CBW HT-seq Module 3 - Genome Alignment   
+# CBW HTG Module 3 - Genome Alignment   
 
  
 Created by Mathieu Bourgey, _Ph.D_
@@ -63,20 +63,23 @@ These are all already installed, but here are the original links.
 ### Environment setup
 
 
-### accessing a working node
+### Launching the container
 
-when you logged into the server you are in a logging node which is not made to run intensive tasks.  In order to run your analysis in a stable environment without affecting other user you need to access a working node. Usually each job shoule be launched through the scheduler to run in a working environment. For the workshop as our job are small and fast, we can directly connect interactively to a working node and launch them one after the other.  
 
 ```
-salloc --mem 0 -n 8
+mkdir -p $HOME/workspace/HTG/Module3/
+
+docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME \
+--user $UID:$GROUPS -v /etc/group:/etc/group  -v /etc/passwd:/etc/passwd \
+-v /etc/fonts/:/etc/fonts/ -v /media:/media c3genomics/genpipes:0.8
 
 ```
 
 #### variables assignment
 
 ```
-export WORK_DIR_M3=$HOME/workspace/HTseq/Module3/
-export REF=$HOME/workspace/HTseq/Module3/reference
+export WORK_DIR_M3=$HOME/workspace/HTG/Module3/
+export REF=$HOME/workspace/HTG/Module3/reference
 
 ```
 #### set up
