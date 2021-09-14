@@ -474,8 +474,8 @@ The goal for this step is to try to recalibrate base quality scores. The vendors
 Also, this step tries to lower the scores of some biased motifs for some technologies.
 
 It runs in 2 steps, 
-1- Build covariates based on context and known snp sites
-2- Correct the reads based on these metrics
+1 - Build covariates based on context and known snp sites  
+2 - Correct the reads based on these metrics  
 
 ```
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
