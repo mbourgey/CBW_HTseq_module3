@@ -251,7 +251,7 @@ The adapter file is already in your reference folder.
 We can look at the adapters
 
 ```
-cat reference/adapters.fa
+cat adapters.fa
 ```
 
 **Why are there 2 different ones ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_trim1.md)
@@ -401,8 +401,8 @@ The Genome Analysis toolkit has a tool for this called IndelRealigner.
 
 It basically runs in 2 steps
 
-1- Find the targets
-2- Realign them.
+1 - Find the targets     
+2 - Realign them.   
 
 ```
 #switch to old GATK 3.8
