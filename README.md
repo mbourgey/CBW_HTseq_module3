@@ -79,7 +79,8 @@ docker run --privileged -v /tmp:/tmp --network host -it -w $PWD -v $HOME:$HOME \
 
 ```
 export WORK_DIR_M3=$HOME/workspace/HTG/Module3/
-export REF=$HOME/workspace/HTG/Module3/reference
+export REF=$MUGQIC_INSTALL_HOME/genomes/species/Homo_sapiens.GRCh37/
+
 
 ```
 #### set up
@@ -117,9 +118,9 @@ ROOT
     `-- NA12878/             # Child sample directory
     `-- NA12891/             # Father sample directory
     `-- NA12892/             # Mother sample directory
-`-- reference/               # hg19 reference and indexes
 `-- scripts/                 # command lines scripts
 `-- saved_results/           # precomputed final files
+`-- adapters.fa              # fasta file containing the adapter used for sequencing`
 ```
 
 ### Cheat sheets
@@ -268,7 +269,7 @@ java -Xmx2G -cp $TRIMMOMATIC_JAR org.usadellab.trimmomatic.TrimmomaticPE -thread
   reads/NA12878/NA12878_CBW_chr1_S1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_S2.t20l32.fastq.gz \
-  ILLUMINACLIP:$REF/adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
+  ILLUMINACLIP:adapters.fa:2:30:15 TRAILING:20 MINLEN:32 \
   2> reads/NA12878/NA12878.trim.out
 
 cat reads/NA12878/NA12878.trim.out
@@ -306,7 +307,7 @@ mkdir -p alignment/NA12878/
 
 bwa mem -M -t 2 \
   -R '@RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPU:runNA12878_1\tCN:Broad Institute\tPL:ILLUMINA' \
-  $REF/hg19.fa \
+  $REF/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   reads/NA12878/NA12878_CBW_chr1_R1.t20l32.fastq.gz \
   reads/NA12878/NA12878_CBW_chr1_R2.t20l32.fastq.gz \
   | java -Xmx2G -jar ${GATK_JAR} SortSam \
@@ -410,14 +411,14 @@ module load mugqic/GenomeAnalysisTK/3.8
 
 java -Xmx2G  -jar ${GATK_JAR} \
   -T RealignerTargetCreator \
-  -R $REF/hg19.fa \
+  -R $REF/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
   -L chr1
 
 java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
-  -R $REF/hg19.fa \
+  -R $REF/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   -targetIntervals alignment/NA12878/realign.intervals \
   -o alignment/NA12878/NA12878.realigned.sorted.bam \
   -I alignment/NA12878/NA12878.sorted.bam
@@ -478,14 +479,14 @@ It runs in 2 steps,
 
 ```
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
-  -R reference/hg19.fa \
+  -R ${REF}/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   --known-sites reference/dbSNP_135_chr1.vcf.gz \
   -L chr1:17704860-18004860 \
   -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 
 java -Xmx2G -jar ${GATK_JAR} ApplyBQSR \
-  -R reference/hg19.fa \
+  -R ${REF}/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   -bqsr alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -O alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -I alignment/NA12878/NA12878.sorted.dup.bam
@@ -521,7 +522,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   --summaryCoverageThreshold 50 \
   --summaryCoverageThreshold 100 \
   --start 1 --stop 500 --nBins 499 -dt NONE \
-  -R reference/hg19.fa \
+  -R ${REF}/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -L chr1:17700000-18100000
@@ -543,7 +544,7 @@ Another way is to compare the mean to the median. If both are almost equal, your
 
 ```
 java -Xmx2G -jar ${GATK_JAR} CollectInsertSizeMetrics \
-  -R reference/hg19.fa \
+  -R ${REF}/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -O alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.tsv \
   -H alignment/NA12878/NA12878.sorted.dup.recal.metric.insertSize.histo.pdf \
@@ -566,7 +567,7 @@ We prefer the GATK way of computing metrics
 
 ```
 java -Xmx2G -jar ${GATK_JAR} CollectAlignmentSummaryMetrics \
-  -R reference/hg19.fa \
+  -R ${REF}/genome/bwa_index/Homo_sapiens.GRCh37.fa \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
   -O alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv \
   --METRIC_ACCUMULATION_LEVEL LIBRARY
