@@ -87,7 +87,7 @@ export REF=$HOME/workspace/HTG/Module3/reference
 ```
 mkdir -p $WORK_DIR_M3
 cd $WORK_DIR_M3
-ln -s $HOME/CourseData/HT_data/Module3/* .
+ln -s $HOME/CourseData/HTG_data/Module3/* .
 
 ```
 ### Modules
