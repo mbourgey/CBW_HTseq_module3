@@ -481,7 +481,7 @@ It runs in 2 steps,
 ```
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -R ${REF}/genome/Homo_sapiens.GRCh37.fa \
-  --known-sites reference/dbSNP_135_chr1.vcf.gz \
+  --known-sites  ${REF}/annotations/Homo_sapiens.GRCh37.dbSNP150.vcf.gz \
   -L 1:17704860-18004860 \
   -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -I alignment/NA12878/NA12878.sorted.dup.bam
