@@ -414,7 +414,7 @@ java -Xmx2G  -jar ${GATK_JAR} \
   -R $REF/genome/Homo_sapiens.GRCh37.fa \
   -o alignment/NA12878/realign.intervals \
   -I alignment/NA12878/NA12878.sorted.bam \
-  -L chr1
+  -L 1
 
 java -Xmx2G -jar ${GATK_JAR} \
   -T IndelRealigner \
@@ -481,7 +481,7 @@ It runs in 2 steps,
 java -Xmx2G -jar ${GATK_JAR} BaseRecalibrator \
   -R ${REF}/genome/Homo_sapiens.GRCh37.fa \
   --known-sites reference/dbSNP_135_chr1.vcf.gz \
-  -L chr1:17704860-18004860 \
+  -L 1:17704860-18004860 \
   -O alignment/NA12878/NA12878.sorted.dup.recalibration_report.grp \
   -I alignment/NA12878/NA12878.sorted.dup.bam
 
@@ -525,7 +525,7 @@ java  -Xmx2G -jar ${GATK_JAR} \
   -R ${REF}/genome/Homo_sapiens.GRCh37.fa \
   -o alignment/NA12878/NA12878.sorted.dup.recal.coverage \
   -I alignment/NA12878/NA12878.sorted.dup.recal.bam \
-  -L chr1:17700000-18100000
+  -L 1:17700000-18100000
 
 #return to GATK 4
 module unload mugqic/GenomeAnalysisTK/3.8
