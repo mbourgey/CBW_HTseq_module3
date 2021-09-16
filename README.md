@@ -180,21 +180,19 @@ zgrep -c "^@" raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz
 
 We can't look at all the reads. Especially when working with whole genome 30x data. You could easilly have Billions of reads.
 
-Tools like FastQC and BVATools readsqc can be used to plot many metrics from these data sets.
+Tools like `FastQC` and `BVATools readsqc` can be used to plot many metrics from these data sets.
 
 Let's look at the data:
 
 ```
-mkdir -p originalQC/
+mkdir -p originalQC/NA12878/
 java -Xmx1G -jar ${BVATOOLS_JAR} readsqc \
   --read1 raw_reads/NA12878/NA12878_CBW_chr1_R1.fastq.gz \
   --read2 raw_reads/NA12878/NA12878_CBW_chr1_R2.fastq.gz \
-  --threads 2 --regionName ACTL8 --output originalQC/
+  --threads 2 --regionName ACTL8 --output originalQC/NA12878/
 ```
 
-open another terminer and launch the following command to copy your data into your local computer  `scp -r userXX@CBW.calculquebec.cloud:workspace/HTseq/Module3/originalQC . `, where `XX` is the id of your account. You may enter your password. Once the copy is done, open `originalQC` folder and open the images.
-Another possibility is to look at the precomputed results here ` https://datahub-39-cm2.p.genap.ca/HTseq/Module3/`
-
+Open the images  
 
 
 
