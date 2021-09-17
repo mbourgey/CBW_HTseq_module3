@@ -579,6 +579,13 @@ less -S alignment/NA12878/NA12878.sorted.dup.recal.metric.alignment.tsv
 
 **What is the percent of aligned reads ?** [solution](https://github.com/mbourgey/CBW_HTseq_module3/blob/master/solutions/_alnMetrics1.md)
 
+## (Optional) Investigating the trio
+<a name="trio"></a>
+
+At this point we have aligned and called variants in one individual. However, we actually have FASTQ and BAM files for three family members (mother and father) !
+
+As additional practice, perform the same steps for the other two individuals (her parents): NA12891 and NA12892.
+
 
 ### quit working node Environment
 
