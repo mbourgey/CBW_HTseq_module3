@@ -3,9 +3,9 @@ layout: tutorial_page
 permalink: /htg_2021_module3_lab
 title: HTG Lab 3
 header1: Workshop Pages for Students
-header2: Informatics on High-Throughput Genomic Module 3 Lab
+header2: High Throughput Genomics Analysis Module 3 Lab
 image: /site_images/CBW_High-throughput_icon.jpg
-home: https://bioinformaticsdotca.github.io/htg_2021
+home: https://bioinformaticsdotca.github.io/HTG_2021
 ---
 
 -----------------------
