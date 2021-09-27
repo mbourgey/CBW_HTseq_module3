@@ -1,6 +1,6 @@
 ---
 layout: tutorial_page
-permalink: /htg_2021_module3_lab
+permalink: /htg_2021_module3_lab_mb
 title: HTG Lab 3
 header1: Workshop Pages for Students
 header2: High Throughput Genomics Analysis Module 3 Lab
